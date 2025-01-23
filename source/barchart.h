@@ -20,45 +20,45 @@ namespace bcra {
   using value_t = long;
 
 /// This class represents a single Bar Chart.
-  class BarChart {
+  class Frame {
   public:
     /// Represents a single bar information.
-    struct BarItem {
+    struct Bar {
       string label;    //!< Bar label.
       value_t value;   //!< Bar value.
       string category; //!< Bar category.
 
       /// Default ctro.
-      BarItem(string &l, value_t &v, string &c)
+      Bar(string &l, value_t &v, string &c)
           : label{std::move(l)}, value{v}, category{std::move(c)} { /*empty*/
       }
 
       // Comparison operators (Used for sorting).
-      inline bool operator<(const BarItem &B) const {
+      inline bool operator<(const Bar &B) const {
         if (this->value != B.value) return this->value < B.value;
         // Lexicographically order the bars if the value is the same
         // Do it reversed so that it will be ordered lexicographically when using greater<>().
         return this->category > B.category;
       }
 
-      inline bool operator>(const BarItem &B) const { return B < *this; }
+      inline bool operator>(const Bar &B) const { return B < *this; }
 
-      inline bool operator<=(const BarItem &B) const { return !(*this > B); }
+      inline bool operator<=(const Bar &B) const { return !(*this > B); }
 
-      inline bool operator>=(const BarItem &B) const { return !(*this < B); }
+      inline bool operator>=(const Bar &B) const { return !(*this < B); }
     };
 
   private:
     //=== Definition
     string m_time_stamp; //!< Timestamp for the Given Data.
-    vector<BarItem> m_bars; //!< Container for the Bars that may be used in the Chart.
+    vector<Bar> m_bars; //!< Container for the Bars that may be used in the Chart.
 
   public:
     //== Public interface
     /// Default ctro.
-    BarChart() = default;
+    Frame() = default;
     /// Default dtro.
-    ~BarChart() = default;
+    ~Frame() = default;
 
     /*!
      * Adds a BarItem to m_bars.

@@ -56,7 +56,7 @@ namespace bcra {
     cout << '\n';
   }
 
-  void Database::show_x_axis(BarChart &curr_chart,size_t num_bars){
+  void Database::show_x_axis(Frame &curr_chart,size_t num_bars){
     value_t first_nun_axis = curr_chart.get_value_m_BarItem(num_bars-1); // First x-axis value after zero (can be zero depending on bar values).
     value_t last_num_axis = curr_chart.get_value_m_BarItem(0); // Last x-axis value.
     int aux_first{0}, aux_last{0}; // Auxiliary variables.

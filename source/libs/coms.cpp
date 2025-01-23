@@ -1,11 +1,11 @@
 #include "coms.h"
 
-inline std::ostream &operator<<(std::ostream &os, const coms::SourceContext &sc) {
+inline std::ostream &operator<<(std::ostream &os, const log::SourceContext &sc) {
   os << sc.file << ":" << sc.line << "ª linha";
   return os;
 }
 
-namespace coms {
+namespace log {
 
   /// Prints out the warning + source context, but the program keeps running.
   void Warning2(const std::string &msg, const SourceContext &sc) {

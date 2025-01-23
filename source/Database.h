@@ -10,17 +10,18 @@
 namespace bcra {
   
   // Forward Declaration.
-  class BarChart;
+  class Frame;
 
   using value_t = long;
 
+  //TODO: Change this class to be an AnimationManager.
   /// Database containing all the charts, title, colors and more.
   class Database {
     //=== Data members
     string main_title; //!< Main Title of the Graph.
     string source; //!< Label for the Graph's x-axis.
     string value_label; //!< Data Source.
-    std::vector<BarChart> m_charts; //!< Charts that we got from the file.
+    std::vector<Frame> m_charts; //!< Charts that we got from the file.
     bool category_overflow; //!< Flag that indicates when there are too many categories to color-code.
     std::map<string, short> color_category; //!< Maps a category to a color, triggers category_overflow if there aren't enough colors.
   public:
@@ -90,7 +91,7 @@ namespace bcra {
      * @param curr_chart Current chart.
      * @param num_bars Number of bars in the chart.
     */
-    void show_x_axis(BarChart &curr_chart,size_t num_bars);
+    void show_x_axis(Frame &curr_chart,size_t num_bars);
 
     /// Reports a category overflow (this shouldn't be needed but multithreading and race conditions are a thing).
     void report_overflow() {category_overflow = true;};

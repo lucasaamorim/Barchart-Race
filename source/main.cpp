@@ -36,7 +36,7 @@
 #include "bcr_am.h"
 
 int main(int argc, char **argv) {
-  bcra::BCRAnimation animation;
+  bcra::AnimationManager animation;
 
   // Parse CLI options
   animation.initialize(argc, argv);

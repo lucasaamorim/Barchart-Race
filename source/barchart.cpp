@@ -9,11 +9,11 @@
 
 namespace bcra {
 
-  void BarChart::add_BarItem(string &label, value_t &value, string &category) {
+  void Frame::add_BarItem(string &label, value_t &value, string &category) {
     m_bars.emplace_back(label, value, category);
   }
 
-  void BarChart::display_bars(const size_t &num_bars, std::map<string, short> &color_category,
+  void Frame::display_bars(const size_t &num_bars, std::map<string, short> &color_category,
                               const bool &overflow) {
     // Build each bar that will be displayed and print them.
     for (size_t i = 0; i < num_bars; i++) {

@@ -71,8 +71,9 @@ namespace bcra {
     [[maybe_unused]]static constexpr Color::value_t default_color = Color::GREEN;
   };
 
+//TODO: Break this class down into smaller ones.
 /// Class representing an animation manager
-  class BCRAnimation {
+  class AnimationManager {
   private:
     //=== Nested types
 
@@ -123,22 +124,22 @@ namespace bcra {
     ani_state_e m_animation_state; //!< Current animation state.
     Database* m_db; //!< The different Charts that make up the animation.
     read_status_e m_read_status; //!< File reading status.
-    coms::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
-    vector<std::tuple<error_e,string,coms::SourceContext>> m_error_msgs;
+    log::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
+    vector<std::tuple<error_e,string,log::SourceContext>> m_error_msgs;
     int curr_frame; //!< Current frame index.
 
   public:
-    BCRAnimation();
+    AnimationManager();
 
-    BCRAnimation(const BCRAnimation &_clone) = delete;
+    AnimationManager(const AnimationManager &_clone) = delete;
 
-    BCRAnimation(BCRAnimation &&) = delete;
+    AnimationManager(AnimationManager &&) = delete;
 
-    BCRAnimation &operator=(const BCRAnimation &_rhs) = delete;
+    AnimationManager &operator=(const AnimationManager &_rhs) = delete;
 
-    BCRAnimation &operator=(BCRAnimation &&) = delete;
+    AnimationManager &operator=(AnimationManager &&) = delete;
 
-    ~BCRAnimation() = default;
+    ~AnimationManager() = default;
 
     //=== Common methods for the animation Loop design pattern.
     void initialize(int, char **);

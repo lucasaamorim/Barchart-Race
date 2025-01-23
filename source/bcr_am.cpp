@@ -22,7 +22,7 @@ namespace bcra {
     return str;
   };
 
-  BCRAnimation::BCRAnimation() {
+  AnimationManager::AnimationManager() {
     m_opt.input_filename = "";
     m_opt.fps = bcra::Cfg::default_fps;
     m_opt.n_bars = bcra::Cfg::default_bars;
@@ -33,7 +33,7 @@ namespace bcra {
   }
 
 /// Initializes the animation engine.
-  void BCRAnimation::initialize(int argc, char **argv) {
+  void AnimationManager::initialize(int argc, char **argv) {
     string error_msg;
     for (int i = 1; i < argc; i++) {
       string opt = str_lowercase(argv[i]);
@@ -48,12 +48,12 @@ namespace bcra {
             if (n_bars > Cfg::max_bars) {
               string max = std::to_string(Cfg::max_bars);
               error_msg = "Number of bars cannot be over "+max+". Using"+max+"  instead.";
-              coms::Warning1(error_msg);
+              log::Warning1(error_msg);
               n_bars = Cfg::max_bars;
             } else if (n_bars < Cfg::min_bars) {
               string min = std::to_string(Cfg::min_bars);
               error_msg = "Number of bars needs to be at least "+min+". Using "+min+" instead.";
-              coms::Warning1(error_msg);
+              log::Warning1(error_msg);
               n_bars = Cfg::min_bars;
             }
 /*====================================================================================================================*/
@@ -69,12 +69,12 @@ namespace bcra {
             if (fps > Cfg::max_fps) {
               string max = std::to_string(Cfg::max_fps);
               error_msg = "FPS cannot exceed "+max+". Using "+max+" instead.";
-              coms::Warning1(error_msg);
+              log::Warning1(error_msg);
               fps = Cfg::max_fps;
             } else if (fps < Cfg::min_fps) {
               string min = std::to_string(Cfg::min_fps);
               error_msg = "FPS has to be at least "+min+". Using "+min+" instead";
-              coms::Warning1(error_msg);
+              log::Warning1(error_msg);
               fps = Cfg::min_fps;
             }
 /*====================================================================================================================*/
@@ -89,7 +89,7 @@ namespace bcra {
           return; // No more arguments to be parsed.
         } else {
           error_msg = "File " + opt + " doesn't exist.\n";
-          coms::Error1(error_msg);
+          log::Error1(error_msg);
         }
       }
     }
@@ -99,16 +99,16 @@ namespace bcra {
     }
     if (m_opt.input_filename.empty()) {
       error_msg = "Please provide a file.";
-      coms::Error1(error_msg);
+      log::Error1(error_msg);
     }
 
   }
 
-  bool BCRAnimation::is_over() const {
+  bool AnimationManager::is_over() const {
     return m_animation_state == ani_state_e::END;
   }
 
-  void BCRAnimation::process_events() {
+  void AnimationManager::process_events() {
     switch (m_animation_state) {
         case ani_state_e::ERROR:
         break;
@@ -127,7 +127,7 @@ namespace bcra {
     }
   }
 
-  void BCRAnimation::update() {
+  void AnimationManager::update() {
     switch (m_animation_state) {
       case ani_state_e::START:
         m_animation_state = ani_state_e::WELCOME;
@@ -158,32 +158,32 @@ namespace bcra {
     }
   }
 
-  void BCRAnimation::render() {
+  void AnimationManager::render() {
     // TODO
     switch (m_animation_state) {
       case ani_state_e::ERROR:
       {
           error_e error_type;
           string error_message;
-          coms::SourceContext sc;
+          log::SourceContext sc;
         for(auto &i : m_error_msgs){
           tie(error_type,error_message,sc) = i;
           switch (error_type)
           {
           case error_e::WARNING1:
-            coms::Warning1(error_message);
+            log::Warning1(error_message);
             break;
           case error_e::WARNING2:
-            coms::Warning2(error_message, sc);
+            log::Warning2(error_message, sc);
             break;
           case error_e::ERROR1:
-            coms::Error1(error_message);
+            log::Error1(error_message);
             break;
           case error_e::ERROR2:
-            coms::Error2(error_message,sc);
+            log::Error2(error_message,sc);
             break;
           default:
-            coms::Message(error_message);
+            log::Message(error_message);
             break;
           }
         }
@@ -231,7 +231,7 @@ namespace bcra {
     std::cout << "\t\tValid range is [1,24]; Default value is 24.\n";
   }
 
-  BCRAnimation::read_status_e BCRAnimation::read_file() {
+  AnimationManager::read_status_e AnimationManager::read_file() {
     string error_msg;
     read_status_e read_status = read_status_e::OK; // It's all ok until it isn't.
     bool disrupted = false; // If true initialize alternative read.

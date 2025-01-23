@@ -14,7 +14,8 @@
 #define WARNING(msg) Warning( msg, SC )
 #define MESSAGE(msg) Message( msg )
 
-namespace coms {
+//TODO: Make a proper Logger class.
+namespace log {
   // Holds context information for a warning or error while pre-processing scene file or executing the renderer.
   // Use macro SC to create one
   struct SourceContext {
