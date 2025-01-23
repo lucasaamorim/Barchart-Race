@@ -1,5 +1,4 @@
-#ifndef DATABASE_H
-#define DATABASE_H
+#pragma once
 
 #include <vector>
 #include <map>
@@ -7,7 +6,6 @@
 #include <math.h>
 #include "barchart.h"
 #include "bcr_am.h"
-
 
 namespace bcra {
   
@@ -99,5 +97,3 @@ namespace bcra {
 
   };
 };
-
-#endif

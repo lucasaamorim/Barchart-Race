@@ -1,35 +1,19 @@
-#ifndef BARCHART_H
-#define BARCHART_H
-
-/*!
- * Bar Char Race project.
- *
- * @author Selan
- * @data October 5th, 2020.
- */
+#pragma once
 
 #include <string>
-
-using std::string;
-
 #include <chrono>
 #include <thread>
-
 #include <utility>
 #include <algorithm>
 #include <map>
-
 #include <vector>
-
-using std::vector;
-
 #include <iostream>
-
-using std::cout;
-
 #include "libs/text_color.h"
 #include "bcr_am.h"
 
+using std::string;
+using std::vector;
+using std::cout;
 
 namespace bcra {
 // The value type of data item.
@@ -116,4 +100,3 @@ namespace bcra {
   };
 
 } // namespace bcra.
-#endif

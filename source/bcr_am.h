@@ -1,9 +1,4 @@
-#ifndef BCR_ANIMATION_H
-#define BCR_ANIMATION_H
-
-/*!
- *  The Bar Char Race animation manager.
- */
+#pragma once
 
 #include <iostream>
 #include <algorithm>
@@ -13,26 +8,20 @@
 #include <vector>
 #include <map>
 #include <filesystem>
-
-using std::vector;
-
 #include <iterator>
 #include <sstream>
 #include <queue>
-
-using std::ostringstream;
-
 #include <numeric>
 #include <tuple>
 #include <string>
-
-using std::string;
-
-
 #include "libs/text_color.h"
 #include "barchart.h"
 #include "Database.h"
 #include "libs/coms.h"
+
+using std::vector;
+using std::ostringstream;
+using std::string;
 
 namespace bcra {
 
@@ -65,7 +54,7 @@ namespace bcra {
   std::istream& get_line(std::istream &stream, string &line, int &line_cnt);
 
 
-/// This struct holds some defaults values.
+/// This struct holds some default values.
   struct Cfg {
     [[maybe_unused]]static constexpr short default_bars = 5; //!< Default value for # of bars.
     [[maybe_unused]]static constexpr short max_bars = 15;    //!< Max # of bars in the animation.
@@ -172,4 +161,3 @@ namespace bcra {
 
   }; // BCRAnimation class.
 } // namespace bcra
-#endif
