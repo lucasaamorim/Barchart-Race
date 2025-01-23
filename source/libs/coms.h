@@ -1,5 +1,4 @@
-#ifndef COMS_H
-#define COMS_H
+#pragma once
 
 #include <iostream>
 #include <iomanip> // setw()
@@ -8,39 +7,22 @@
 
 #include "text_color.h"
 
-#define SC SourceContext(__FILE__, __LINE__)
-
-#define ERROR(msg) Error( msg, SC )
-#define WARNING(msg) Warning( msg, SC )
-#define MESSAGE(msg) Message( msg )
-
-//TODO: Make a proper Logger class.
-namespace log {
-  // Holds context information for a warning or error while pre-processing scene file or executing the renderer.
-  // Use macro SC to create one
-  struct SourceContext {
+class Logger{
+public:
+  struct SourceContext
+  {
     string file;
     int line;
 
     SourceContext(string file = "n/a", int line = 0) : file(file), line(line) {}
-
     SourceContext &operator=(const SourceContext &) = default;
-
     SourceContext(const SourceContext &clone) = default;
-
     ~SourceContext() = default;
   };
 
-  void Error2(const std::string &, const SourceContext &);
-
-  void Error1(const std::string &);
-
-  void Warning2(const std::string &, const SourceContext &);
-
-  void Warning1(const std::string &);
-
-  void Message(const std::string &);
-} // namespace coms
-
-#endif
-//-------------------------------------------------------------------------------
+  static void logError1(const std::string &message);
+  static void logError2(const std::string &message, const SourceContext &sc);
+  static void logWarning1(const std::string &message);
+  static void logWarning2(const std::string &message, const SourceContext &sc);
+  static void logDebug(const std::string &message);
+};
