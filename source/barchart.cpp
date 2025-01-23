@@ -25,11 +25,11 @@ namespace bcra {
       string bar(bar_size, ' ');
       // If an overflow has not happened you can print colorful bars.
       if (!overflow) {
-        std::cout << Color::tcolor(bar, color_category[curr_bar.category], Color::REVERSE);
-        std::cout << Color::tcolor(" "+curr_bar.label+" ["+std::to_string(curr_bar.value)+"]\n\n", color_category[curr_bar.category], Color::BOLD);
+        std::cout << TextFormat::applyFormat(bar, color_category[curr_bar.category], Modifiers::REVERSE);
+        std::cout << TextFormat::applyFormat(" "+curr_bar.label+" ["+std::to_string(curr_bar.value)+"]\n\n", color_category[curr_bar.category], Modifiers::BOLD);
       } else { // Print all of them in the same Color.
-        std::cout << Color::tcolor(bar, Cfg::default_color, Color::REVERSE);
-        std::cout << Color::tcolor(" "+curr_bar.label+" ["+std::to_string(curr_bar.value)+"]\n\n", Cfg::default_color, Color::BOLD);
+        std::cout << TextFormat::applyFormat(bar, Cfg::default_color, Modifiers::REVERSE);
+        std::cout << TextFormat::applyFormat(" "+curr_bar.label+" ["+std::to_string(curr_bar.value)+"]\n\n", Cfg::default_color, Modifiers::BOLD);
       }
     }
   }

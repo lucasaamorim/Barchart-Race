@@ -48,12 +48,12 @@ namespace bcra {
             if (n_bars > Cfg::max_bars) {
               string max = std::to_string(Cfg::max_bars);
               error_msg = "Number of bars cannot be over "+max+". Using"+max+"  instead.";
-              log::Warning1(error_msg);
+              Logger::logWarning1(error_msg);
               n_bars = Cfg::max_bars;
             } else if (n_bars < Cfg::min_bars) {
               string min = std::to_string(Cfg::min_bars);
               error_msg = "Number of bars needs to be at least "+min+". Using "+min+" instead.";
-              log::Warning1(error_msg);
+              Logger::logWarning1(error_msg);
               n_bars = Cfg::min_bars;
             }
 /*====================================================================================================================*/
@@ -69,12 +69,12 @@ namespace bcra {
             if (fps > Cfg::max_fps) {
               string max = std::to_string(Cfg::max_fps);
               error_msg = "FPS cannot exceed "+max+". Using "+max+" instead.";
-              log::Warning1(error_msg);
+              Logger::logWarning1(error_msg);
               fps = Cfg::max_fps;
             } else if (fps < Cfg::min_fps) {
               string min = std::to_string(Cfg::min_fps);
               error_msg = "FPS has to be at least "+min+". Using "+min+" instead";
-              log::Warning1(error_msg);
+              Logger::logWarning1(error_msg);
               fps = Cfg::min_fps;
             }
 /*====================================================================================================================*/
@@ -89,7 +89,7 @@ namespace bcra {
           return; // No more arguments to be parsed.
         } else {
           error_msg = "File " + opt + " doesn't exist.\n";
-          log::Error1(error_msg);
+          Logger::logError1(error_msg);
         }
       }
     }
@@ -99,7 +99,7 @@ namespace bcra {
     }
     if (m_opt.input_filename.empty()) {
       error_msg = "Please provide a file.";
-      log::Error1(error_msg);
+      Logger::logError1(error_msg);
     }
 
   }
@@ -165,25 +165,25 @@ namespace bcra {
       {
           error_e error_type;
           string error_message;
-          log::SourceContext sc;
+          Logger::SourceContext sc;
         for(auto &i : m_error_msgs){
           tie(error_type,error_message,sc) = i;
           switch (error_type)
           {
           case error_e::WARNING1:
-            log::Warning1(error_message);
+            Logger::logWarning1(error_message);
             break;
           case error_e::WARNING2:
-            log::Warning2(error_message, sc);
+            Logger::logWarning2(error_message, sc);
             break;
           case error_e::ERROR1:
-            log::Error1(error_message);
+            Logger::logError1(error_message);
             break;
           case error_e::ERROR2:
-            log::Error2(error_message,sc);
+            Logger::logError2(error_message,sc);
             break;
           default:
-            log::Message(error_message);
+            Logger::logDebug(error_message);
             break;
           }
         }
@@ -361,10 +361,10 @@ namespace bcra {
             case val_types_e::TYPE:// Bar category.
               category = token;
               // Check if a new color needs to be added for this category and if there are enough colors.
-              if (curr_color >= Color::color_list.size()) {
+              if (curr_color >= Colors::COLORS.size()) {
                 m_db->report_overflow();
               } else if (!m_db->find_category(category)) { // Category not found in color map.
-                m_db->add_category(category, Color::color_list[curr_color]);
+                m_db->add_category(category, Colors::COLORS[curr_color]);
                 curr_color++;
               }
               break;

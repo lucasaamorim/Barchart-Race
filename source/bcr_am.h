@@ -54,7 +54,7 @@ namespace bcra {
   std::istream& get_line(std::istream &stream, string &line, int &line_cnt);
 
 
-/// This struct holds some default values.
+  ///Holds some default values.
   struct Cfg {
     [[maybe_unused]]static constexpr short default_bars = 5; //!< Default value for # of bars.
     [[maybe_unused]]static constexpr short max_bars = 15;    //!< Max # of bars in the animation.
@@ -68,7 +68,7 @@ namespace bcra {
     [[maybe_unused]]static constexpr short n_ticks = 5; //!< Number of ticks on the X axis.
     [[maybe_unused]]static constexpr short height = 30; //!< How many lines total one screen have.
     [[maybe_unused]]static constexpr short width = 60;  //!< Total columns per screen.
-    [[maybe_unused]]static constexpr Color::value_t default_color = Color::GREEN;
+    [[maybe_unused]]static constexpr short default_color = Colors::GREEN;
   };
 
 //TODO: Break this class down into smaller ones.
@@ -124,8 +124,8 @@ namespace bcra {
     ani_state_e m_animation_state; //!< Current animation state.
     Database* m_db; //!< The different Charts that make up the animation.
     read_status_e m_read_status; //!< File reading status.
-    log::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
-    vector<std::tuple<error_e,string,log::SourceContext>> m_error_msgs;
+    Logger::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
+    vector<std::tuple<error_e,string,Logger::SourceContext>> m_error_msgs;
     int curr_frame; //!< Current frame index.
 
   public:
