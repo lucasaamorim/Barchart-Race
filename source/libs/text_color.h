@@ -12,9 +12,11 @@
  */
 #include <sstream>
 #include <string>
+#include <array>
 
 using std::ostringstream;
 using std::string;
+using std::array;
 
 class TextFormat {
 public:
@@ -50,6 +52,9 @@ struct Colors {
   static constexpr short BRIGHT_MAGENTA{95};
   static constexpr short BRIGHT_CYAN{96};
   static constexpr short BRIGHT_WHITE{97};
+
+  static constexpr array<short,16> COLORS{BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE,
+                                          BRIGHT_BLACK, BRIGHT_RED, BRIGHT_GREEN, BRIGHT_YELLOW, BRIGHT_BLUE, BRIGHT_MAGENTA, BRIGHT_CYAN, BRIGHT_WHITE};
 };
 
 /// @brief ANSI escape codes for text modifiers. 
@@ -59,4 +64,6 @@ struct Modifiers {
   static constexpr short UNDERLINE{4};
   static constexpr short BLINK{5};
   static constexpr short REVERSE{7};
+
+  static constexpr array<short,5> MODIFIERS{REGULAR, BOLD, UNDERLINE, BLINK, REVERSE};
 };
