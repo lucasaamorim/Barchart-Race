@@ -8,7 +8,6 @@
 #include <vector>       // std::vector
 #include "barchart.h"   // Frame
 
-//TODO: Implementar métodos
 class AnimationManager {
   vector<std::unique_ptr<Frame>> frames;
   std::map<string, color_t> categories;
