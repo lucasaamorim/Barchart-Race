@@ -9,14 +9,26 @@
 #include "animation.h"  // AnimationManager
 #include "libs/coms.h"  // Logger
 
+/**
+ * @brief A class responsible for parsing input files containing bar chart animation data.
+ * 
+ * The FileParser class reads and validates input files containing data for bar chart race animations.
+ * It processes the file header, metadata, and frame data, creating the necessary data structures
+ * for the animation.
+ */
 class FileParser {
-  string file_path;
-  Logger::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
-  std::set<string> categories;
-  std::shared_ptr<AnimationManager> animation_manager;
+  string file_path;                                     ///< Path to the input file
+  Logger::SourceContext source_context;                 ///< Logger source context for the FileParser class
+  std::set<string> categories;                          ///< Set of unique categories found in the data
+  std::shared_ptr<AnimationManager> animation_manager;  ///< Pointer to the AnimationManager instance
 
-  struct Metadata{
-    string main_title, x_label, source;
+  /**
+   * @brief Structure holding metadata information for the animation
+   */
+  struct Metadata {
+    string main_title;  ///< Main title of the animation
+    string x_label;     ///< Label for the x-axis
+    string source;      ///< Source attribution for the data
   } metadata;
 
   public:

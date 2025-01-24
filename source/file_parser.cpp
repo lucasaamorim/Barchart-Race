@@ -61,12 +61,35 @@ void FileParser::readHeader(std::ifstream& file){
   getLine(file, metadata.source, source_context.line);
 }
 
+/**
+ * @brief Populates a Frame object with metadata information
+ * 
+ * This function transfers metadata from the FileParser's metadata structure
+ * to the provided Frame object, setting its title, x-axis label, and source.
+ * 
+ * @param frame Reference to the Frame object to be populated with metadata
+ */
 void FileParser::fillFrameMetadata(Frame& frame){
   frame.setTitle(metadata.main_title);
   frame.setXLabel(metadata.x_label);
   frame.setSource(metadata.source);
 }
 
+/**
+ * @brief Validates and converts a string to the number of bars to be displayed in a frame
+ * 
+ * @param line A string containing the number to be validated
+ * @throws std::invalid_argument if the string cannot be converted to a number
+ * @throws std::out_of_range if the number is too large for an integer
+ * @return int The validated number of bars
+ * 
+ * @details This function performs the following validations:
+ *          - Checks if the string can be converted to a number
+ *          - Verifies if the number fits within integer bounds
+ *          - Ensures the number is greater than zero
+ * 
+ * The function logs appropriate error messages if any validation fails.
+ */
 int FileParser::validateNumbersBarsForFrame(string& line){
   int n_bars;
   try { //These are fatal errors. If they happen, there is no need to continue reading the file.
@@ -82,6 +105,29 @@ int FileParser::validateNumbersBarsForFrame(string& line){
   return n_bars;
 }
 
+/**
+ * @brief Process data from a file to create a frame with bars
+ * 
+ * This function reads data line by line from a file, tokenizes each line,
+ * validates the data, and constructs bars which are added to a frame.
+ * The process continues until the specified number of bars is reached or
+ * an unrecoverable error occurs.
+ * 
+ * @param n_bars Number of bars to process
+ * @param file Input file stream to read data from
+ * @param buffer Queue to store tokenized data temporarily
+ * @param frame Frame object to store the processed bars
+ * 
+ * @note The function handles disrupted reads and validates bar items before processing
+ * @note Each valid line should contain a timestamp followed by bar data
+ * 
+ * @details The function processes each line by:
+ *          1. Reading a line from the file
+ *          2. Tokenizing the line into the buffer
+ *          3. Validating the number of items
+ *          4. Creating a bar with the tokenized data
+ *          5. Adding the valid bar to the frame
+ */
 void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, Frame& frame){
   bool disrupted = false; // If true initialize alternative read.
   string line;
@@ -109,6 +155,23 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
   }
 }
 
+/*!
+ * @brief Validates the number of items in a bar entry from the input file.
+ *
+ * This function checks if the number of tokens (items) in a line meets the requirements
+ * for creating a valid bar entry. A valid bar entry must have exactly 5 tokens.
+ *
+ * @param n_itens Reference to the number of items found in the line
+ * @param disrupted Reference to a flag indicating if parsing should be discontinued
+ * @param buffer Reference to a queue containing the tokens from the line
+ *
+ * @return bool Returns true if the number of items is valid (5) or too many (>5),
+ *              returns false if the number of items is insufficient (<5) or indicates end of chart (1)
+ *
+ * @warning If more than 5 tokens are found, only the first 5 will be used
+ * @warning If exactly 1 token is found, assumes premature end of barchart
+ * @warning If less than 5 tokens are found, the line is ignored and buffer is cleared
+ */
 bool FileParser::validateNumberBarItens(int& n_itens, bool& disrupted, std::queue<string>& buffer){
   // Check if there is an incorrect amount of tokens in the line.
   if (n_itens > 5) { // Warning.
@@ -128,6 +191,22 @@ bool FileParser::validateNumberBarItens(int& n_itens, bool& disrupted, std::queu
   return true;
 }
 
+/**
+ * @brief Sets the properties of a Bar object from a queue of strings
+ * 
+ * This function processes a queue of strings to populate a Bar object with its label,
+ * value, and category. It follows a specific order of processing: label first,
+ * then value, and finally category. The category is also added to the class's
+ * categories set.
+ * 
+ * @param buffer A queue of strings containing the bar's properties in order (label, value, category)
+ * @param bar The Bar object to be populated with the properties
+ * @return bool Returns true if all properties were set successfully,
+ *              false if there was an error validating the bar value
+ * 
+ * @note The function assumes the buffer contains the correct number of items
+ *       in the correct order (label, value, category)
+ */
 bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
   int item_type = item_type_bar_e::BAR_LABEL;
   while (!buffer.empty()){
@@ -154,6 +233,22 @@ bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
   return true;
 }
 
+/**
+ * @brief Validates and converts a string to an integer bar value
+ * 
+ * @param item String containing the value to be validated and converted
+ * @param value Reference to store the converted integer value
+ * 
+ * @return true If the string was successfully converted to an integer
+ * @return false If the string is not a valid number or is out of range
+ * 
+ * @details This function attempts to convert a string to an integer using stoi().
+ * It handles invalid input through exception handling for:
+ * - std::invalid_argument: When the string is not a valid number
+ * - std::out_of_range: When the number is too large for an integer
+ * 
+ * Both error cases are logged through the Logger system with appropriate messages.
+ */
 bool FileParser::validateBarValue(string& item, int& value){
   string error_msg;
   try { // Using stoi's built-in exceptions and providing coms standard errors.
@@ -168,6 +263,12 @@ bool FileParser::validateBarValue(string& item, int& value){
   return true;
 }
 
+/**
+ * @brief Retrieves the metadata information from the FileParser object
+ * @param main_title Reference to store the main title of the chart
+ * @param x_label Reference to store the x-axis label
+ * @param source Reference to store the data source information
+ */
 void FileParser::getMetadata(string& main_title, string& x_label, string& source){
   main_title = metadata.main_title;
   x_label = metadata.x_label;

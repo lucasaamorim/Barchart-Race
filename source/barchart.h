@@ -13,6 +13,10 @@ using std::string;
 using std::vector;
 using std::cout;
 
+constexpr int DEFAULT_BAR_LENGTH = 50;
+constexpr int DEFAULT_AXIS_LENGTH = 60;
+constexpr int DEFAULT_TICKS = 10;
+
 /**
  * @brief A class representing a single bar in the bar chart
  * 
@@ -48,20 +52,18 @@ class Bar {
  * including the bars themselves, title, labels, and sizing information.
  */
 class Frame {
-  std::map<string, color_t> category_colors;  ///< Map associating each category with a color
-  std::vector<std::unique_ptr<Bar>> bars;     ///< Collection of bars stored in descending order
-  string title;                               ///< The title of the chart
-  string x_label;                             ///< The label for the x-axis
-  string timestamp;                           ///< The timestamp for this frame
-  string source;                              ///< The data source information
-  int bar_length = 50;                             ///< Maximum number of characters a bar can occupy
-  int axis_length = 60;                            ///< Length of the x-axis in characters
-  int n_ticks = 10;                                ///< Number of tick marks on the x-axis
+  std::vector<std::unique_ptr<Bar>> bars;          ///< Collection of bars stored in descending order
+  string title;                                    ///< The title of the chart
+  string x_label;                                  ///< The label for the x-axis
+  string timestamp;                                ///< The timestamp for this frame
+  string source;                                   ///< The data source information
+  int bar_length = DEFAULT_BAR_LENGTH;             ///< Maximum number of characters a bar can occupy
+  int axis_length = DEFAULT_AXIS_LENGTH;           ///< Length of the x-axis in characters
+  int n_ticks = DEFAULT_TICKS;                     ///< Number of tick marks on the x-axis
 
   public:
   Frame() = default;
   Frame(const Frame& other) : 
-  category_colors(other.category_colors),
   title(other.title),
   x_label(other.x_label),
   timestamp(other.timestamp),

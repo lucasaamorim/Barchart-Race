@@ -9,8 +9,8 @@
 #include "barchart.h"   // Frame
 
 class AnimationManager {
-  vector<std::unique_ptr<Frame>> frames;
-  std::map<string, color_t> categories;
+  vector<std::unique_ptr<Frame>> frames;  ///< Vector of frames
+  std::map<string, color_t> categories;   ///< Map of categories and colors
 
   public:
     AnimationManager() = default;
