@@ -22,7 +22,7 @@ class FileParser {
   void fillFrameHeader(std::unique_ptr<Frame>& frame);
   int validateNumbersBarsForFrame(string& line);
   void processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, std::unique_ptr<Frame>& frame);
-  //void validateNumbersBarItens(string& line, bool& disrupted, std::ifstream& file);
+  bool validateNumberBarItens(int& n_itens, bool& disrupted, std::queue<string>& buffer);
   bool setBarItens(std::queue<string>& buffer, std::unique_ptr<Bar>& bar);
   bool validateBarValue(string& item, int& value);
 

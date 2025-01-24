@@ -9,6 +9,13 @@ enum item_type_bar_e{
   CATEGORY
 };
 
+enum errors_number_bar_itens_e{
+  EXCESSIVE_ARGUMENTS,
+  PREMATURE_END,
+  FEW_ARGUMENTS, 
+  NONE
+};
+
 void FileParser::loadFile(){
   std::ifstream file(file_path);
   std::unique_ptr<Frame> frame = std::make_unique<Frame>();
@@ -69,29 +76,19 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
   string line;
   int n_bar_itens;
   for (int i = 0; i < n_bars; i++){
-    //validateNumbersBarItens(line, disrupted, file);
     // Get a line and Tokenize it.
     if (!disrupted) {
       get_line(file, line, source_context.line);
       n_bar_itens = tokenize_line(line, buffer);
     } else disrupted = false; // Back to normal routine.
 
-/*================================== Exception Handling ==============================================================*/
-    // Check if there is an incorrect amount of tokens in the line.
-    if (n_bar_itens > 5) { // Warning.
-      Logger::logWarning2("Too many arguments for a Bar. Using first 5 values in line.", source_context);
+    if (!validateNumberBarItens(n_bar_itens, disrupted, buffer)) {
+      if (disrupted) {
+          break; // Premature end.
+      }
+      continue; // Ignoring this bar
     }
-    if (n_bar_itens == 1) { // Warning.
-      Logger::logWarning2("Assuming Premature end of Barchart.", source_context);
-      disrupted = true;
-      break;
-    }
-    if (n_bar_itens < 5) {
-      Logger::logWarning2("Incorrect amount of tokens in the line. Ignoring this Bar.", source_context);
-      std::queue<string>().swap(buffer); // Clear the buffer.
-      continue;
-    }
-/*====================================================================================================================*/
+    
     std::unique_ptr<Bar> bar = std::make_unique<Bar>();
     if(setBarItens(buffer, bar)){
       frame->addBar(std::move(bar));
@@ -99,33 +96,24 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
   }
 }
 
-//void FileParser::validateNumbersBarItens(string& line, bool& disrupted, std::ifstream& file){
-//  int n_itens;
-//  if (!disrupted) {
-//    get_line(file, line, source_context.line);
-//    n_itens = tokenize_line(line, buffer);
-//  } else disrupted = false; // Back to normal routine.
-//
-///*================================== Exception Handling ==============================================================*/
-//  // Check if there is an incorrect amount of tokens in the line.
-//  if (n_itens > 5) { // Warning.
-//    error_msg = "Too many arguments for a Bar. Using first 5 values in line.";
-//    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
-//  }
-//  if (n_itens == 1) { 
-//    error_msg = "Assuming Premature end of Barchart";
-//    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
-//    disrupted = true;
-//    break;
-//  }
-//  if (n_itens < 5) {
-//    error_msg = "Incorrect amount of tokens in the line. Ignoring this Bar.";
-//    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
-//    std::queue<string>().swap(buffer); // Clear the buffer.
-//    continue;
-//  }
-///*====================================================================================================================*/
-//}
+bool FileParser::validateNumberBarItens(int& n_itens, bool& disrupted, std::queue<string>& buffer){
+  // Check if there is an incorrect amount of tokens in the line.
+  if (n_itens > 5) { // Warning.
+    Logger::logWarning2("Too many arguments for a Bar. Using first 5 values in line.", source_context);
+    return true;
+  }
+  if (n_itens == 1) { 
+    Logger::logWarning2("Assuming Premature end of Barchart.", source_context);
+    disrupted = true;
+    return false;
+  }
+  if (n_itens < 5) {
+    Logger::logWarning2("Incorrect amount of tokens in the line. Ignoring this Bar.", source_context);
+    std::queue<string>().swap(buffer); // Clear the buffer.
+    return false;
+  }
+  return true;
+}
 
 bool FileParser::setBarItens(std::queue<string>& buffer, std::unique_ptr<Bar>& bar) {
   int item_type = item_type_bar_e::BAR_LABEL;
