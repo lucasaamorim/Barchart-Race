@@ -1,7 +1,5 @@
 #include "file_parser.h"
 
-string main_title, x_label, source;
-
 enum item_type_bar_e{
   BAR_LABEL = 0,
   USELESS,
@@ -27,9 +25,9 @@ void FileParser::loadFile(){
   readHeader(file);
   fillFrameMetadata(ref_frame);
   string line;
-  while(get_line(file, line, source_context.line)) {
+  while(getLine(file, line, source_context.line)) {
     auto frame_ptr = std::make_unique<Frame>(ref_frame);
-    size_t n_tokens = tokenize_line(line, buffer);
+    size_t n_tokens = tokenizeLine(line, buffer);
     // Checks if there are too many values ​​given in the bar quantity line.
     if (n_tokens > 1) {
       Logger::logWarning2("The number of bars that will be on the current chart could not be read because too many values were provided in the line.", source_context);
@@ -54,15 +52,15 @@ void FileParser::loadFile(){
  * lines will be read.
  */
 void FileParser::readHeader(std::ifstream& file){
-  get_line(file, main_title, source_context.line);
-  get_line(file, x_label, source_context.line);
-  get_line(file,source, source_context.line);
+  getLine(file, metadata.main_title, source_context.line);
+  getLine(file, metadata.x_label, source_context.line);
+  getLine(file, metadata.source, source_context.line);
 }
 
 void FileParser::fillFrameMetadata(Frame& frame){
-  frame.setTitle(main_title);
-  frame.setXLabel(x_label);
-  frame.setSource(source);
+  frame.setTitle(metadata.main_title);
+  frame.setXLabel(metadata.x_label);
+  frame.setSource(metadata.source);
 }
 
 int FileParser::validateNumbersBarsForFrame(string& line){
@@ -87,8 +85,8 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
   for (int i = 0; i < n_bars; i++){
     // Get a line and Tokenize it.
     if (!disrupted) {
-      get_line(file, line, source_context.line);
-      n_bar_itens = tokenize_line(line, buffer);
+      getLine(file, line, source_context.line);
+      n_bar_itens = tokenizeLine(line, buffer);
     } else disrupted = false; // Back to normal routine.
 
     if (!validateNumberBarItens(n_bar_itens, disrupted, buffer)) {
@@ -166,12 +164,19 @@ bool FileParser::validateBarValue(string& item, int& value){
   return true;
 }
 
+void FileParser::getMetadata(string main_title, string x_label, string source){
+  main_title = metadata.main_title;
+  x_label = metadata.x_label;
+  source = metadata.source;
+}
+
 /*!
-   * Tokenizes values in a line.
-   * @param line Line to tokenize.
-   * @param buffer Buffer to push the tokens to.
+  * @param stream Stream to retrieve data from.
+  * @param line Reference to string that will recieve the line.
+  * @param line_cnt An integer to be incremented for every empty line it jumps over.
+  * @return The input stream. It may have the failbit flag set on if it's empty.
   */
-std::istream& FileParser::get_line(std::istream &stream, string &line, int &line_cnt) {
+std::istream& FileParser::getLine(std::istream &stream, string &line, int &line_cnt) {
   line.clear();
   char c;
   while(line.empty()) {
@@ -191,12 +196,11 @@ std::istream& FileParser::get_line(std::istream &stream, string &line, int &line
 }
 
 /*!
-  * @param stream Stream to retrieve data from.
-  * @param line Reference to string that will recieve the line.
-  * @param line_cnt An integer to be incremented for every empty line it jumps over.
-  * @return The input stream. It may have the failbit flag set on if it's empty.
+   * Tokenizes values in a line.
+   * @param line Line to tokenize.
+   * @param buffer Buffer to push the tokens to.
   */
-size_t FileParser::tokenize_line(string &line, std::queue<string> &buffer) {
+size_t FileParser::tokenizeLine(string &line, std::queue<string> &buffer) {
     size_t first{0}, last{0}, n_tokens{0};
     string token;
     string delimiters = ",\n";

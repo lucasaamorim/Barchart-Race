@@ -15,6 +15,10 @@ class FileParser {
   std::set<string> categories;
   std::shared_ptr<AnimationManager> animation_manager;
 
+  struct Metadata{
+    string main_title, x_label, source;
+  } metadata;
+
   public:
   FileParser(string f_path, std::shared_ptr<AnimationManager> am) : file_path(f_path), animation_manager(am) {};
   void loadFile();
@@ -25,9 +29,10 @@ class FileParser {
   bool validateNumberBarItens(int& n_itens, bool& disrupted, std::queue<string>& buffer);
   bool setBarItens(std::queue<string>& buffer, Bar& bar);
   bool validateBarValue(string& item, int& value);
+  void getMetadata(string main_title, string x_label, string source);
 
   /// Custom implementation of getline with some conviniences, similar to getline(strean >> std::ws, line).
-  std::istream& get_line(std::istream &stream, string &line, int &line_cnt);
+  std::istream& getLine(std::istream &stream, string &line, int &line_cnt);
 
-  size_t tokenize_line(string &line, std::queue<string> &buffer);
+  size_t tokenizeLine(string &line, std::queue<string> &buffer);
 };

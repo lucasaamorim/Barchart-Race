@@ -18,5 +18,7 @@ class AnimationManager {
 
     void addFrame(std::unique_ptr<Frame> frame) { frames.push_back(std::move(frame)); }
     void PlayAnimation(int fps, int n_bars);
+    size_t numberCharts() { return frames.size(); }
+    size_t numberCategories() { return categories.size(); }
     //void smoothFrames(); would be cool but will not implement it right now
 };

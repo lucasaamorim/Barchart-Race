@@ -19,9 +19,12 @@ int main(int argc, char **argv) {
   parseArgs(argc, argv);
   printWelcome();
 
-  std::shared_ptr animation = std::make_shared<AnimationManager>();
+  std::shared_ptr<AnimationManager> animation = std::make_shared<AnimationManager>();
   FileParser parser(filepath, animation);
-  parser.loadFile();
+  readInput(parser, animation);
+  
+  string enter_to_entry;
+  getline(std::cin, enter_to_entry);
   animation->PlayAnimation(fps,bars);
 
   return EXIT_SUCCESS;
@@ -40,9 +43,25 @@ void printUsage() {
 }
 
 void printWelcome() {
-  std::cout << std::setw(50) << std::setfill('=') << std::endl;
+  std::cout << "==============================================\n";
   std::cout << "  Welcome to the Bar Chart Race, v2.0\n";
-  std::cout << std::setw(50) << std::setfill('=') << std::endl;
+  std::cout << "==============================================\n";
+}
+
+void readInput(FileParser& parser, std::shared_ptr<AnimationManager> animation){
+  string title, x_axis_label, source;
+  parser.getMetadata(title, x_axis_label, source);
+  cout << ">>> Preparing to read input file \"" << filepath << "\"...\n\n";
+  cout << ">>> Processing data, please wait.\n";
+  parser.loadFile();
+  cout << ">>> Input file successfully read.\n";
+  cout << ">>> We have " << animation->numberCharts() << " charts, each with " << bars << " bars.\n\n";
+  cout << ">>> Animation Speed is " << fps << " fps.\n";
+  cout << ">>> Title: " << title << '\n';
+  cout << ">>> X axis label: " << x_axis_label << '\n';
+  cout << ">>> Source: " << source << '\n';
+  cout << ">>> # of categories found: " << animation->numberCategories() << '\n';
+  cout << "Press enter to begin the animation.\n";
 }
 
 void parseArgs(int argc, char **argv) {
