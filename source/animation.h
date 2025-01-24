@@ -16,7 +16,7 @@ class AnimationManager {
   public:
     AnimationManager() = default;
 
-    void addFrame(std::unique_ptr<Frame> frame) { frames.emplace_back(frame); }
+    void addFrame(std::unique_ptr<Frame> frame) { frames.push_back(std::move(frame)); }
     void PlayAnimation(int fps, int n_bars);
     //void smoothFrames(); would be cool but will not implement it right now
 };
