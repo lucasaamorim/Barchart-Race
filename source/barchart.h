@@ -61,14 +61,13 @@ class Frame {
   void render(std::map<string,color_t> categories, int n_bars); // Has between 1 and 15 categories
   void calcLengths();
   void sortBars();
-  void addBar(std::unique_ptr<Bar> bar) { bars.emplace_back(bar); }
+  void addBar(std::unique_ptr<Bar> bar) { bars.push_back(std::move(bar)); }
   string buildXAxis() const;
   bool empty() { return bars.empty(); }
   void addCategoryColor(const string &category) { category_colors[category] = Colors::COLORS[category_colors.size()%Colors::COLORS.size()]; }
 
   void setTitle(const string &title) { this->title = title; }
   void setXLabel(const string &x_label) { this->x_label = x_label; }
-  void setSource(const string &source) { this->source = source; }
   void setTimestamp(const string &timestamp) { this->timestamp = timestamp; }
   void setSource(const string &source) { this->source = source; }
 };
