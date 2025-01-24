@@ -1,35 +1,129 @@
 #include "file_parser.h"
 #include <queue>
 
-string main_title, value_label, source;
+string main_title, x_label, source;
 
 void FileParser::loadFile(){
   std::ifstream file(file_path);
   Frame frame;
+  std::queue<string> buffer;
   if(!file.is_open()){
     error_msg = "Erro ao abrir o arquivo.";
+
   }
   source_context.file = file_path;
   readHeader(file);
-  fillingHeaderFrame(Frame& frame);
-  
+  fillingHeaderFrame(frame);
+  string line;
+  while(get_line(file, line, source_context.line)) {
+    error_msg.clear();
+    size_t n_tokens = tokenize_line(line, buffer);
+    // Checks if there are too many values ​​given in the bar quantity line.
+    if (n_tokens > 1) {
+      error_msg = "The number of bars that will be on the current chart could not be read because too many values were provided in the line.";
+      //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+      std::queue<string>().swap(buffer); // Clear the buffer.
+      continue;
+    }
+    buffer.pop();
+    int n_bars = validateNumbersBarsForFrame(line);
+    processBarItens(n_bars, file, buffer);
+  }
 }
 
 void FileParser::readHeader(std::ifstream& file){
   get_line(file, main_title, source_context.line);
-  get_line(file, value_label, source_context.line);
+  get_line(file, x_label, source_context.line);
   get_line(file,source, source_context.line);
 }
 
 void FileParser::fillingHeaderFrame(Frame& frame){
-  // Preenche frame com o header
+  frame.setTitle(main_title);
+  frame.setXLabel(x_label);
+  frame.setSource(source);
 }
 
-void FileParser::parseData(){
-
+int FileParser::validateNumbersBarsForFrame(string& line){
+  int n_bars;
+  try { //These are fatal errors. If they happen, there is no need to continue reading the file.
+    n_bars = std::stoi(line);
+  } catch (std::invalid_argument&) {
+    error_msg = "The value provided is not a number.";
+    //m_error_msgs.emplace_back(error_e::ERROR2,error_msg,source_context);
+  } catch (std::out_of_range&) {
+    error_msg = "The given value is too big. ";
+    //m_error_msgs.emplace_back(error_e::ERROR2,error_msg,source_context);
+  }
+  if (n_bars <= 0) {
+    error_msg = "Invalid Number of Bars.";
+    //m_error_msgs.emplace_back(error_e::ERROR2,error_msg,source_context);
+  }
 }
 
-bool FileParser::validateFile() const {
+void FileParser::processBarItens(int n_bars, std::ifstream& file, std::queue<string>& buffer){
+  bool disrupted = false; // If true initialize alternative read.
+  string line;
+  int n_bar_itens;
+  for (int i = 0; i < n_bars; i++){
+    //validateNumbersBarItens(line, disrupted, file);
+    // Get a line and Tokenize it.
+    if (!disrupted) {
+      get_line(file, line, source_context.line);
+      n_bar_itens = tokenize_line(line, buffer);
+    } else disrupted = false; // Back to normal routine.
+
+/*================================== Exception Handling ==============================================================*/
+    // Check if there is an incorrect amount of tokens in the line.
+    if (n_bar_itens > 5) { // Warning.
+      error_msg = "Too many arguments for a Bar. Using first 5 values in line.";
+      //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+    }
+    if (n_bar_itens == 1) { // Warning.
+      error_msg = "Assuming Premature end of Barchart";
+      //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+      disrupted = true;
+      break;
+    }
+    if (n_bar_itens < 5) { // FATAL.
+      error_msg = "Incorrect amount of tokens in the line. Ignoring this Bar.";
+      //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+      std::queue<string>().swap(buffer); // Clear the buffer.
+      continue;
+    }
+/*====================================================================================================================*/
+    validateBarItens();
+  }
+}
+
+//void FileParser::validateNumbersBarItens(string& line, bool& disrupted, std::ifstream& file){
+//  int n_itens;
+//  if (!disrupted) {
+//    get_line(file, line, source_context.line);
+//    n_itens = tokenize_line(line, buffer);
+//  } else disrupted = false; // Back to normal routine.
+//
+///*================================== Exception Handling ==============================================================*/
+//  // Check if there is an incorrect amount of tokens in the line.
+//  if (n_itens > 5) { // Warning.
+//    error_msg = "Too many arguments for a Bar. Using first 5 values in line.";
+//    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+//  }
+//  if (n_itens == 1) { 
+//    error_msg = "Assuming Premature end of Barchart";
+//    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+//    disrupted = true;
+//    break;
+//  }
+//  if (n_itens < 5) {
+//    error_msg = "Incorrect amount of tokens in the line. Ignoring this Bar.";
+//    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+//    std::queue<string>().swap(buffer); // Clear the buffer.
+//    continue;
+//  }
+///*====================================================================================================================*/
+//}
+
+bool FileParser::validateBarItens() {
   
 }
 

@@ -18,9 +18,11 @@ class FileParser {
   void loadFile();
   void readHeader(std::ifstream& file);
   void fillingHeaderFrame(Frame& frame);
-  void parseData();
+  int validateNumbersBarsForFrame(string& line);
+  void processBarItens(int n_bars, std::ifstream& file, std::queue<string>& buffer);
+  //void validateNumbersBarItens(string& line, bool& disrupted, std::ifstream& file);
   std::vector<Frame> getParsedFrames() const { return parsed_frames; }
-  bool validateFile() const;
+  bool validateBarItens();
 
   /// Custom implementation of getline with some conviniences, similar to getline(strean >> std::ws, line).
   /*!

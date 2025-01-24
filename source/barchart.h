@@ -42,5 +42,6 @@ class Frame {
   void addBar(const Bar &bar) { bars.push(bar); }
   void setTitle(const string &title) { this->title = title; }
   void setXLabel(const string &x_label) { this->x_label = x_label; }
+  void setSource(const string &source) { this->source = source; }
   void setTimestamp(const string &timestamp) { this->timestamp = timestamp; }
 };
