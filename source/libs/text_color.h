@@ -39,8 +39,8 @@ struct Colors {
   static constexpr color_t BRIGHT_CYAN{96};
   static constexpr color_t BRIGHT_WHITE{97};
 
-  static constexpr array<color_t,16> COLORS{BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE,
-                                          BRIGHT_BLACK, BRIGHT_RED, BRIGHT_GREEN, BRIGHT_YELLOW, BRIGHT_BLUE, BRIGHT_MAGENTA, BRIGHT_CYAN, BRIGHT_WHITE};
+  static constexpr array<color_t,16> COLORS{RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE,
+                                          BRIGHT_RED, BRIGHT_GREEN, BRIGHT_YELLOW, BRIGHT_BLUE, BRIGHT_MAGENTA, BRIGHT_CYAN, BRIGHT_WHITE, BRIGHT_BLACK, BLACK};
 };
 
 /// @brief ANSI escape codes for text modifiers. 

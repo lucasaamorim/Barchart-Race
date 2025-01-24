@@ -40,6 +40,10 @@ void FileParser::loadFile(){
     processData(n_bars, file, buffer, *frame_ptr);
     animation_manager->addFrame(std::move(frame_ptr));
   }
+
+  for (const auto &category : categories) {
+    animation_manager->addCategoryColor(category);
+  }
 }
 
 /**

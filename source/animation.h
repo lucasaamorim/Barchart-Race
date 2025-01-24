@@ -8,7 +8,6 @@
 #include <vector>       // std::vector
 #include "barchart.h"   // Frame
 
-//TODO: Implementar métodos
 class AnimationManager {
   vector<std::unique_ptr<Frame>> frames;
   std::map<string, color_t> categories;
@@ -17,6 +16,7 @@ class AnimationManager {
     AnimationManager() = default;
 
     void addFrame(std::unique_ptr<Frame> frame) { frames.push_back(std::move(frame)); }
+    void addCategoryColor(string category) { categories[category] = Colors::COLORS[categories.size()%Colors::COLORS.size()]; }
     void PlayAnimation(int fps, int n_bars);
     size_t numberCharts() { return frames.size(); }
     size_t numberCategories() { return categories.size(); }
