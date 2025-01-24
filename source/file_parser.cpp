@@ -37,8 +37,6 @@ void FileParser::loadFile(){
     }
     buffer.pop();
     int n_bars = validateNumbersBarsForFrame(line);
-    frame->setTimestamp(buffer.front());
-    buffer.pop();
     processData(n_bars, file, buffer, frame);
     animation_manager->addFrame(std::move(frame));
   }
@@ -99,6 +97,10 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
     }
 
     std::unique_ptr<Bar> bar = std::make_unique<Bar>();
+    //std::cout << buffer.front() << "\n";
+    cout << "Aqui\n";
+    frame->setTimestamp(buffer.front());
+    buffer.pop();
     if(setBarItens(buffer, bar)){
       frame->addBar(std::move(bar));
     }
@@ -134,6 +136,7 @@ bool FileParser::setBarItens(std::queue<string>& buffer, std::unique_ptr<Bar>& b
         bar->setLabel(item);
         break;
       case item_type_bar_e::VALUE:
+      cout << item << "\n";
         int value;
         if(!validateBarValue(item, value)) return false;
         bar->setValue(value);
