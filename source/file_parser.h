@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <vector>
+#include <queue>
 #include "barchart.h"
 #include "libs/coms.h"
 
