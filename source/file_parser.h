@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <queue>
+#include <set>
 #include "barchart.h"
 #include "libs/coms.h"
 
@@ -12,6 +13,7 @@ class FileParser {
   vector<Frame> parsed_frames;
   Logger::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
   string error_msg;
+  std::set<string> categories;
   //std::fstream file_logger;
 
   public:
@@ -20,10 +22,11 @@ class FileParser {
   void readHeader(std::ifstream& file);
   void fillingHeaderFrame(Frame& frame);
   int validateNumbersBarsForFrame(string& line);
-  void processBarItens(int n_bars, std::ifstream& file, std::queue<string>& buffer);
+  void processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, Frame& frame);
   //void validateNumbersBarItens(string& line, bool& disrupted, std::ifstream& file);
+  bool setBarItens(std::queue<string>& buffer, Bar& bar);
+  bool validateValueBar(string& item, int& value);
   std::vector<Frame> getParsedFrames() const { return parsed_frames; }
-  bool validateBarItens();
 
   /// Custom implementation of getline with some conviniences, similar to getline(strean >> std::ws, line).
   /*!

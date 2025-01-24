@@ -3,6 +3,13 @@
 
 string main_title, x_label, source;
 
+enum item_type_bar_e{
+  BAR_LABEL = 0,
+  USELESS,
+  VALUE,
+  CATEGORY
+};
+
 void FileParser::loadFile(){
   std::ifstream file(file_path);
   Frame frame;
@@ -27,7 +34,10 @@ void FileParser::loadFile(){
     }
     buffer.pop();
     int n_bars = validateNumbersBarsForFrame(line);
-    processBarItens(n_bars, file, buffer);
+    frame.setTimestamp(buffer.front());
+    buffer.pop();
+    processData(n_bars, file, buffer, frame);
+    parsed_frames.push_back(frame);
   }
 }
 
@@ -58,9 +68,10 @@ int FileParser::validateNumbersBarsForFrame(string& line){
     error_msg = "Invalid Number of Bars.";
     //m_error_msgs.emplace_back(error_e::ERROR2,error_msg,source_context);
   }
+  return n_bars;
 }
 
-void FileParser::processBarItens(int n_bars, std::ifstream& file, std::queue<string>& buffer){
+void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, Frame& frame){
   bool disrupted = false; // If true initialize alternative read.
   string line;
   int n_bar_itens;
@@ -91,7 +102,10 @@ void FileParser::processBarItens(int n_bars, std::ifstream& file, std::queue<str
       continue;
     }
 /*====================================================================================================================*/
-    validateBarItens();
+    Bar bar;
+    if(setBarItens(buffer, bar)){
+      frame.addBar(bar);
+    }
   }
 }
 
@@ -123,8 +137,46 @@ void FileParser::processBarItens(int n_bars, std::ifstream& file, std::queue<str
 ///*====================================================================================================================*/
 //}
 
-bool FileParser::validateBarItens() {
-  
+bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
+  int item_type = item_type_bar_e::BAR_LABEL;
+  while (!buffer.empty()){
+    string item = buffer.front();
+    buffer.pop();
+    switch (item_type){
+      case item_type_bar_e::BAR_LABEL:
+        bar.setLabel(item);
+        break;
+      case item_type_bar_e::VALUE:
+        int value;
+        if(!validateValueBar(item, value)) return false;
+        bar.setValue(value);
+        break;
+      case item_type_bar_e::CATEGORY:
+        bar.setCategory(item);
+        categories.insert(item);
+        break;
+      default:
+        break;
+    }
+    item_type++;
+  }
+  return true;
+}
+
+bool FileParser::validateValueBar(string& item, int& value){
+  string error_msg;
+  try { // Using stoi's built-in exceptions and providing coms standard errors.
+    value = stoi(item);
+  } catch (std::invalid_argument&) {
+    error_msg = "Provided Bar value is not a number.";
+    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+    return false;
+  } catch (std::out_of_range&) {
+    error_msg = "Provided Bar value is too big.";
+    //m_error_msgs.emplace_back(error_e::WARNING2,error_msg,source_context);
+    return false;
+  }
+  return true;
 }
 
 std::istream& FileParser::get_line(std::istream &stream, string &line, int &line_cnt) {
