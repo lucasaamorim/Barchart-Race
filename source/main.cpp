@@ -8,6 +8,7 @@
 
 void printUsage();
 void printWelcome();
+void readInput();
 void parseArgs(int argc, char **argv);
 
 int fps = 24;
