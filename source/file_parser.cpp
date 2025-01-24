@@ -1,5 +1,4 @@
 #include "file_parser.h"
-#include <queue>
 
 string main_title, x_label, source;
 
@@ -12,7 +11,7 @@ enum item_type_bar_e{
 
 void FileParser::loadFile(){
   std::ifstream file(file_path);
-  Frame frame;
+  std::unique_ptr<Frame> frame = std::make_unique<Frame>();
   std::queue<string> buffer;
   if(!file.is_open()){
     Logger::logError1("Erro ao abrir o arquivo.");
@@ -31,10 +30,10 @@ void FileParser::loadFile(){
     }
     buffer.pop();
     int n_bars = validateNumbersBarsForFrame(line);
-    frame.setTimestamp(buffer.front());
+    frame->setTimestamp(buffer.front());
     buffer.pop();
     processData(n_bars, file, buffer, frame);
-    parsed_frames.push_back(frame);
+    animation_manager->addFrame(std::move(frame));
   }
 }
 
@@ -44,10 +43,10 @@ void FileParser::readHeader(std::ifstream& file){
   get_line(file,source, source_context.line);
 }
 
-void FileParser::fillFrameHeader(Frame& frame){
-  frame.setTitle(main_title);
-  frame.setXLabel(x_label);
-  frame.setSource(source);
+void FileParser::fillFrameHeader(std::unique_ptr<Frame>& frame){
+  frame->setTitle(main_title);
+  frame->setXLabel(x_label);
+  frame->setSource(source);
 }
 
 int FileParser::validateNumbersBarsForFrame(string& line){
@@ -65,7 +64,7 @@ int FileParser::validateNumbersBarsForFrame(string& line){
   return n_bars;
 }
 
-void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, Frame& frame){
+void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, std::unique_ptr<Frame>& frame){
   bool disrupted = false; // If true initialize alternative read.
   string line;
   int n_bar_itens;
@@ -93,9 +92,9 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
       continue;
     }
 /*====================================================================================================================*/
-    Bar bar;
+    std::unique_ptr<Bar> bar = std::make_unique<Bar>();
     if(setBarItens(buffer, bar)){
-      frame.addBar(bar);
+      frame->addBar(std::move(bar));
     }
   }
 }
@@ -128,22 +127,22 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
 ///*====================================================================================================================*/
 //}
 
-bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
+bool FileParser::setBarItens(std::queue<string>& buffer, std::unique_ptr<Bar>& bar) {
   int item_type = item_type_bar_e::BAR_LABEL;
   while (!buffer.empty()){
     string item = buffer.front();
     buffer.pop();
     switch (item_type){
       case item_type_bar_e::BAR_LABEL:
-        bar.setLabel(item);
+        bar->setLabel(item);
         break;
       case item_type_bar_e::VALUE:
         int value;
         if(!validateBarValue(item, value)) return false;
-        bar.setValue(value);
+        bar->setValue(value);
         break;
       case item_type_bar_e::CATEGORY:
-        bar.setCategory(item);
+        bar->setCategory(item);
         categories.insert(item);
         break;
       default:
@@ -168,6 +167,11 @@ bool FileParser::validateBarValue(string& item, int& value){
   return true;
 }
 
+/*!
+   * Tokenizes values in a line.
+   * @param line Line to tokenize.
+   * @param buffer Buffer to push the tokens to.
+  */
 std::istream& FileParser::get_line(std::istream &stream, string &line, int &line_cnt) {
   line.clear();
   char c;
@@ -187,6 +191,12 @@ std::istream& FileParser::get_line(std::istream &stream, string &line, int &line
   return stream;
 }
 
+/*!
+  * @param stream Stream to retrieve data from.
+  * @param line Reference to string that will recieve the line.
+  * @param line_cnt An integer to be incremented for every empty line it jumps over.
+  * @return The input stream. It may have the failbit flag set on if it's empty.
+  */
 size_t FileParser::tokenize_line(string &line, std::queue<string> &buffer) {
     size_t first{0}, last{0}, n_tokens{0};
     string token;

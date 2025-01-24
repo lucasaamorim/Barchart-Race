@@ -4,7 +4,7 @@
 #include <vector>             // std::vector
 #include <iostream>           // std::cout
 #include <map>                // std::map
-#include <memory>             // std::shared_ptr
+#include <memory>             // std::unique_ptr
 #include <algorithm>          // std::sort, std::max
 #include "libs/text_color.h"  // color_t
 #include "libs/coms.h"        // Logger 
@@ -46,23 +46,25 @@ class Bar {
  * including the bars themselves, title, labels, and sizing information.
  */
 class Frame {
-  std::vector<std::shared_ptr<Bar>> bars; ///< Collection of bars stored in descending order
-  string title;                           ///< The title of the chart
-  string x_label;                         ///< The label for the x-axis
-  string timestamp;                       ///< The timestamp for this frame
-  string source;                          ///< The data source information
-  int bar_length;                         ///< Maximum number of characters a bar can occupy
-  int axis_length;                        ///< Length of the x-axis in characters
-  int n_ticks;                            ///< Number of tick marks on the x-axis
+  std::map<string, color_t> category_colors;  ///< Map associating each category with a color
+  std::vector<std::unique_ptr<Bar>> bars;     ///< Collection of bars stored in descending order
+  string title;                               ///< The title of the chart
+  string x_label;                             ///< The label for the x-axis
+  string timestamp;                           ///< The timestamp for this frame
+  string source;                              ///< The data source information
+  int bar_length;                             ///< Maximum number of characters a bar can occupy
+  int axis_length;                            ///< Length of the x-axis in characters
+  int n_ticks;                                ///< Number of tick marks on the x-axis
 
   public:
   void render(int n_bars); // Has > 15 categories or none
   void render(std::map<string,color_t> categories, int n_bars); // Has between 1 and 15 categories
   void calcLengths();
   void sortBars();
-  void addBar(const Bar &bar) { bars.emplace_back(bar); }
+  void addBar(std::unique_ptr<Bar> bar) { bars.emplace_back(bar); }
   string buildXAxis() const;
   bool empty() { return bars.empty(); }
+  void addCategoryColor(const string &category) { category_colors[category] = Colors::COLORS[category_colors.size()%Colors::COLORS.size()]; }
 
   void setTitle(const string &title) { this->title = title; }
   void setXLabel(const string &x_label) { this->x_label = x_label; }
