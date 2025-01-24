@@ -1,5 +1,14 @@
 #include "barchart.h"
 
+/**
+ * @brief Sorts the bars in descending order based on their values.
+ * 
+ * This function sorts the internal vector of bars using std::sort with a lambda 
+ * comparator that compares bar values. Bars with higher values will appear first
+ * in the sorted vector.
+ * 
+ * Time Complexity: O(n log n) where n is the number of bars
+ */
 void Frame::sortBars() {
   
   auto cmp = [] (const auto &a, const auto &b) {
@@ -9,6 +18,16 @@ void Frame::sortBars() {
   std::sort(bars.begin(), bars.end(), cmp);
 }
 
+/**
+ * @brief Calculates and updates the visual length of all bars in the frame
+ * 
+ * This function calculates the relative length of each bar based on its value
+ * compared to the maximum value in the frame. The length is scaled proportionally
+ * to fit within the specified bar_length.
+ * 
+ * The calculation uses the formula: length = (value * bar_length) / max_value
+ * where max_value is the value of the highest bar in the frame.
+ */
 void Frame::calcLengths() {
   int max_value = bars.back()->getValue();
 
@@ -17,6 +36,27 @@ void Frame::calcLengths() {
   }
 }
 
+/**
+ * @brief Builds and returns a string representation of the X-axis for the bar chart
+ * 
+ * This function creates a horizontal axis with tick marks and corresponding numeric values.
+ * The axis is scaled based on the maximum value of the bars and includes formatted numbers
+ * (using K for thousands, M for millions, B for billions).
+ * 
+ * The axis consists of two parts:
+ * 1. A line with '+' marks for ticks and '-' for the axis line, ending with '>'
+ * 2. Numeric values aligned under each tick mark
+ * 
+ * @return string The formatted X-axis as a string, including tick marks and values
+ * 
+ * Example output:
+ * +----+----+----+----+>
+ * 0    25K  50K  75K  100K
+ * 
+ * @note The axis length and number of ticks are determined by class member variables
+ *       axis_length and n_ticks
+ * @note The scale is determined by the maximum value in the bars vector
+ */
 string Frame::buildXAxis() const {
   string axis;
   int tick_separation = (axis_length-1) / n_ticks;
@@ -51,16 +91,29 @@ string Frame::buildXAxis() const {
   }
 
   axis += ">\n";
-  // Printing the values
 
+  // Printing the values
   for (int i = 0; i < tick_locations.size(); i++) {
-    axis += std::string(tick_locations[i] - std::to_string(tick_values[i]).size(), ' ');
+    string tick_value_str = number_format(tick_values[i]);
+    int space_count = std::max(0, tick_locations[i] - static_cast<int>(tick_value_str.size()));
+    axis += std::string(space_count, ' ');
     axis += number_format(tick_values[i]) + "\n";
   }
 
   return axis;
 }
 
+/**
+ * @brief Renders a bar with the specified color and label
+ * 
+ * This function creates and outputs a bar visualization by:
+ * 1. Creating a string of spaces with length specified by the Bar's length
+ * 2. Applying reverse formatting with the specified color
+ * 3. Appending the bar's label with the same color
+ * 4. Outputting the formatted bar to standard output with a newline
+ *
+ * @param color The color to use for both the bar and label
+ */
 void Frame::Bar::render(color_t color) const {
   string bar = string(' ', length);
   bar = TextFormat::applyFormat(bar, color, Modifiers::REVERSE);
@@ -69,7 +122,23 @@ void Frame::Bar::render(color_t color) const {
   cout << bar << '\n';
 }
 
+/**
+ * @brief Renders a frame of the bar chart to standard output
+ * 
+ * This overload renders all bars in the same color (cyan).
+ * The frame includes a header with title and timestamp, the bars themselves,
+ * an x-axis, and footer with x-axis label and source information.
+ * 
+ * @param n_bars The maximum number of bars to render. If n_bars is greater than
+ *              the actual number of bars, all bars will be rendered
+ * 
+ * @throws RuntimeError if the frame is empty (logged via Logger::logError1)
+ * 
+ * @note Bars are sorted before rendering
+ * @note All bars are rendered in cyan color
+ */
 void Frame::render(int n_bars) {
+  if (empty()) Logger::logError1("Cannot render an empty frame.");
   // Chart Header
   cout << "\t\t" << TextFormat::applyFormat(title, Colors::BLUE, Modifiers::BOLD) << "\n\n";
   cout << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
@@ -80,33 +149,55 @@ void Frame::render(int n_bars) {
     bars[i]->render(Colors::CYAN);
   }
 
-  buildXAxis();
+  cout << buildXAxis();
 
   // Chart Footer
   cout << TextFormat::applyFormat(x_label, Colors::YELLOW, Modifiers::BOLD) << "\n\n";
   cout << TextFormat::applyFormat(source, Colors::WHITE, Modifiers::BOLD) << "\n";
 }
 
+/**
+ * @brief Renders a frame of the bar chart race, coloring bars based on their categories
+ * 
+ * This method displays the complete frame including header (title and timestamp),
+ * the bars themselves, x-axis, footer (x-label and source), and a color caption.
+ * Bars are colored according to their category using the provided category-color mapping.
+ * 
+ * @param categories Map associating each category name with its corresponding color
+ * @param n_bars Maximum number of bars to display (will display fewer if frame contains less bars)
+ * 
+ * @throws Logger::Error1 if the frame is empty
+ * 
+ * @note Bars are automatically sorted before rendering
+ * @note If n_bars is greater than the actual number of bars, all bars will be displayed
+ */
 void Frame::render(std::map<string,color_t> categories, int n_bars) {
+  if (empty()) {
+    Logger::logError1("Cannot render an empty frame.");
+    return;
+  } else if (categories.size() > 15) {
+    render(n_bars);
+    return;
+  }
   // Chart Header
   cout << "\t\t" << TextFormat::applyFormat(title, Colors::BLUE, Modifiers::BOLD) << "\n\n";
   cout << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
-
   //Chart Body
   sortBars();
   for (int i = 0; i < n_bars and i < bars.size(); i++) {
-    bars[i]->render(categories[bars[i]->getCategory()]);
+    auto category_color = categories[bars[i]->getCategory()];
+    bars[i]->render(category_color);
   }
   
-  buildXAxis();
-
+  cout << buildXAxis();
   // Chart Footer
   cout << TextFormat::applyFormat(x_label, Colors::YELLOW, Modifiers::BOLD) << "\n\n";
   cout << TextFormat::applyFormat(source, Colors::WHITE, Modifiers::BOLD) << "\n";
   // Color Caption
   for (const auto &[category_name, category_color] : categories) {
     cout << TextFormat::applyFormat("   ", category_color, Modifiers::REVERSE) 
-         << TextFormat::applyFormat(": "+category_name, category_color, Modifiers::BOLD) << " ";;
+         << TextFormat::applyFormat(": "+category_name, category_color, Modifiers::BOLD)
+         << " ";
   }
   cout << '\n';
 }
