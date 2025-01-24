@@ -3,12 +3,11 @@
 #include <thread>
 #include <chrono>
 #include "barchart.h"
-#include "renderer.h"
 
 //TODO: Implementar métodos
 class AnimationManager {
   vector<Frame> frames;
-  TerminalRenderer renderer;
+  std::map<string, color_t> categories;
   int frame_rate;
 
   public:
