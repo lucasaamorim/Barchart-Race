@@ -68,9 +68,11 @@ string Frame::buildXAxis() const {
     if (number >= (int)1e9) {
       formatted_number = std::to_string(number / 1000000000) + "B";
     } else if (number >= (int)1e6) {
-      formatted_number = std::to_string(number / 1000000) + "M";
+      if (number < (int)1e7) formatted_number = std::to_string(number / 1000000) + "." + std::to_string((number / 10000)%100) + "M";
+      else formatted_number = std::to_string(number / 1000000) + "M";
     } else if (number >= (int)1e3) {
-      formatted_number = std::to_string(number / 1000) + "K";
+      if (number < (int)1e4) formatted_number = std::to_string(number / 1000) + "." + std::to_string((number / 10)%100) + "K";
+      else formatted_number = std::to_string(number / 1000) + "K";
     }
     return formatted_number;
   };
