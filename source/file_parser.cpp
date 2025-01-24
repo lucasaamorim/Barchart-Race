@@ -19,6 +19,7 @@ enum item_type_bar_e{
 void FileParser::loadFile(){
   std::ifstream file(file_path);
   std::unique_ptr<Frame> frame = std::make_unique<Frame>();
+  frame->setTimestamp("oi");
   std::queue<string> buffer;
   if(!file.is_open()){
     Logger::logError1("Erro ao abrir o arquivo.");
@@ -97,8 +98,6 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
     }
 
     std::unique_ptr<Bar> bar = std::make_unique<Bar>();
-    //std::cout << buffer.front() << "\n";
-    cout << "Aqui\n";
     frame->setTimestamp(buffer.front());
     buffer.pop();
     if(setBarItens(buffer, bar)){
@@ -136,7 +135,6 @@ bool FileParser::setBarItens(std::queue<string>& buffer, std::unique_ptr<Bar>& b
         bar->setLabel(item);
         break;
       case item_type_bar_e::VALUE:
-      cout << item << "\n";
         int value;
         if(!validateBarValue(item, value)) return false;
         bar->setValue(value);
