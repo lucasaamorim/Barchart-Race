@@ -19,7 +19,7 @@ void FileParser::loadFile(){
   }
   source_context.file = file_path;
   readHeader(file);
-  fillingHeaderFrame(frame);
+  fillFrameHeader(frame);
   string line;
   while(get_line(file, line, source_context.line)) {
     size_t n_tokens = tokenize_line(line, buffer);
@@ -44,7 +44,7 @@ void FileParser::readHeader(std::ifstream& file){
   get_line(file,source, source_context.line);
 }
 
-void FileParser::fillingHeaderFrame(Frame& frame){
+void FileParser::fillFrameHeader(Frame& frame){
   frame.setTitle(main_title);
   frame.setXLabel(x_label);
   frame.setSource(source);
@@ -139,7 +139,7 @@ bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
         break;
       case item_type_bar_e::VALUE:
         int value;
-        if(!validateValueBar(item, value)) return false;
+        if(!validateBarValue(item, value)) return false;
         bar.setValue(value);
         break;
       case item_type_bar_e::CATEGORY:
@@ -154,7 +154,7 @@ bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
   return true;
 }
 
-bool FileParser::validateValueBar(string& item, int& value){
+bool FileParser::validateBarValue(string& item, int& value){
   string error_msg;
   try { // Using stoi's built-in exceptions and providing coms standard errors.
     value = stoi(item);
