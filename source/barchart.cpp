@@ -29,7 +29,7 @@ void Frame::sortBars() {
  * where max_value is the value of the highest bar in the frame.
  */
 void Frame::calcLengths() {
-  int max_value = bars.back()->getValue();
+  int max_value = bars.front()->getValue();
 
   for (auto &bar : bars) {
     bar->setLength(bar->getValue() * bar_length / max_value);
@@ -60,7 +60,7 @@ void Frame::calcLengths() {
 string Frame::buildXAxis() const {
   string axis;
   int tick_separation = (axis_length-1) / n_ticks;
-  int max_value = bars.back()->getValue();
+  int max_value = bars.front()->getValue();
 
   
   auto number_format = [] (int number) {
@@ -77,9 +77,11 @@ string Frame::buildXAxis() const {
 
   vector<int> tick_locations;
   vector<int> tick_values;
+  tick_values.reserve(n_ticks), tick_locations.reserve(n_ticks);
   // Printing the Axis itself
   axis += "+"; //Put the first tick on zero.
   tick_locations.push_back(0);
+  tick_values.push_back(0);
   for (int i = 1; i < axis_length; i++) {
     if (i % tick_separation == 0) {
       axis += "+";
@@ -93,12 +95,15 @@ string Frame::buildXAxis() const {
   axis += ">\n";
 
   // Printing the values
+  int currpos = 0;
   for (int i = 0; i < tick_locations.size(); i++) {
     string tick_value_str = number_format(tick_values[i]);
-    int space_count = std::max(0, tick_locations[i] - static_cast<int>(tick_value_str.size()));
+    int space_count = std::max(0, tick_locations[i] - currpos);
     axis += std::string(space_count, ' ');
-    axis += number_format(tick_values[i]) + "\n";
+    axis += tick_value_str;
+    currpos += space_count + tick_value_str.size();
   }
+  axis += "\n";
 
   return axis;
 }
@@ -115,11 +120,9 @@ string Frame::buildXAxis() const {
  * @param color The color to use for both the bar and label
  */
 void Bar::render(color_t color) const {
-  string bar = string(' ', length);
-  bar = TextFormat::applyFormat(bar, color, Modifiers::REVERSE);
-  bar += TextFormat::applyFormat(label, color);
-
-  cout << bar << '\n';
+  string bar = string(length, ' ');
+  cout << TextFormat::applyFormat(bar, color, Modifiers::REVERSE)
+       << TextFormat::applyFormat(label, color) << '\n';
 }
 
 /**
@@ -145,6 +148,9 @@ void Frame::render(int n_bars) {
 
   //Chart Body
   sortBars();
+
+  calcLengths();
+  
   for (int i = 0; i < n_bars and i < bars.size(); i++) {
     bars[i]->render(Colors::CYAN);
   }
@@ -184,6 +190,9 @@ void Frame::render(std::map<string,color_t> categories, int n_bars) {
   cout << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
   //Chart Body
   sortBars();
+
+  calcLengths();
+
   for (int i = 0; i < n_bars and i < bars.size(); i++) {
     auto category_color = categories[bars[i]->getCategory()];
     bars[i]->render(category_color);

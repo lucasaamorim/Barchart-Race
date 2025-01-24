@@ -38,6 +38,7 @@ class Bar {
   void setLabel(const string &label) { this->label = label; }
   int getValue() const { return value; }
   string getCategory() const { return category; }
+  int getLength() const { return length; }
 };
 
 /**
@@ -53,9 +54,9 @@ class Frame {
   string x_label;                             ///< The label for the x-axis
   string timestamp;                           ///< The timestamp for this frame
   string source;                              ///< The data source information
-  int bar_length;                             ///< Maximum number of characters a bar can occupy
-  int axis_length;                            ///< Length of the x-axis in characters
-  int n_ticks;                                ///< Number of tick marks on the x-axis
+  int bar_length = 50;                             ///< Maximum number of characters a bar can occupy
+  int axis_length = 60;                            ///< Length of the x-axis in characters
+  int n_ticks = 10;                                ///< Number of tick marks on the x-axis
 
   public:
   Frame() = default;
