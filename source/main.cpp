@@ -36,6 +36,7 @@ void printUsage() {
   std::cout << "\t-f <num> Animation speed in fps (frames per second).\n";
   std::cout << "\t\tValid range is [1,24]; Default value is 24.";
   std::cout << std::endl;
+  exit(1);
 }
 
 void printWelcome() {

@@ -99,8 +99,6 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
     }
 
     std::unique_ptr<Bar> bar = std::make_unique<Bar>();
-    //std::cout << buffer.front() << "\n";
-    cout << "Aqui\n";
     frame.setTimestamp(buffer.front());
     buffer.pop();
     if(setBarItens(buffer, *bar)){
