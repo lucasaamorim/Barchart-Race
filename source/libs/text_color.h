@@ -54,6 +54,7 @@ struct Modifiers {
   static constexpr array<mod_t,5> MODIFIERS{REGULAR, BOLD, UNDERLINE, BLINK, REVERSE};
 };
 
+/// @brief Class to apply text formatting to strings.
 class TextFormat {
 public:
   /// Returns a string with a colored message.
