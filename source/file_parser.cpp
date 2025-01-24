@@ -18,16 +18,17 @@ enum item_type_bar_e{
  */
 void FileParser::loadFile(){
   std::ifstream file(file_path);
-  std::unique_ptr<Frame> frame = std::make_unique<Frame>();
   std::queue<string> buffer;
+  Frame ref_frame;
   if(!file.is_open()){
     Logger::logError1("Erro ao abrir o arquivo.");
   }
   source_context.file = file_path;
   readHeader(file);
-  fillFrameMetadata(frame);
+  fillFrameMetadata(ref_frame);
   string line;
   while(get_line(file, line, source_context.line)) {
+    auto frame_ptr = std::make_unique<Frame>(ref_frame);
     size_t n_tokens = tokenize_line(line, buffer);
     // Checks if there are too many values ​​given in the bar quantity line.
     if (n_tokens > 1) {
@@ -37,8 +38,9 @@ void FileParser::loadFile(){
     }
     buffer.pop();
     int n_bars = validateNumbersBarsForFrame(line);
-    processData(n_bars, file, buffer, frame);
-    animation_manager->addFrame(std::move(frame));
+    if (frame_ptr == nullptr) Logger::logError1("Frame not initialized.");
+    processData(n_bars, file, buffer, *frame_ptr);
+    animation_manager->addFrame(std::move(frame_ptr));
   }
 }
 
@@ -57,10 +59,10 @@ void FileParser::readHeader(std::ifstream& file){
   get_line(file,source, source_context.line);
 }
 
-void FileParser::fillFrameMetadata(std::unique_ptr<Frame>& frame){
-  frame->setTitle(main_title);
-  frame->setXLabel(x_label);
-  frame->setSource(source);
+void FileParser::fillFrameMetadata(Frame& frame){
+  frame.setTitle(main_title);
+  frame.setXLabel(x_label);
+  frame.setSource(source);
 }
 
 int FileParser::validateNumbersBarsForFrame(string& line){
@@ -78,7 +80,7 @@ int FileParser::validateNumbersBarsForFrame(string& line){
   return n_bars;
 }
 
-void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, std::unique_ptr<Frame>& frame){
+void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, Frame& frame){
   bool disrupted = false; // If true initialize alternative read.
   string line;
   int n_bar_itens;
@@ -96,13 +98,14 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
       continue; // Ignoring this bar
     }
 
-    std::unique_ptr<Bar> bar = std::make_unique<Bar>();
+    auto bar = std::make_unique<Bar>();
     //std::cout << buffer.front() << "\n";
-    cout << "Aqui\n";
-    frame->setTimestamp(buffer.front());
+    //if (buffer.empty()) Logger::logWarning2("Premature end of Bar.", source_context);
+    //if (!frame) Logger::logError1("Frame not initialized.");
+    frame.setTimestamp(buffer.front());
     buffer.pop();
-    if(setBarItens(buffer, bar)){
-      frame->addBar(std::move(bar));
+    if(setBarItens(buffer, *bar)){
+      frame.addBar(std::move(bar));
     }
   }
 }
@@ -126,23 +129,23 @@ bool FileParser::validateNumberBarItens(int& n_itens, bool& disrupted, std::queu
   return true;
 }
 
-bool FileParser::setBarItens(std::queue<string>& buffer, std::unique_ptr<Bar>& bar) {
+bool FileParser::setBarItens(std::queue<string>& buffer, Bar& bar) {
   int item_type = item_type_bar_e::BAR_LABEL;
   while (!buffer.empty()){
     string item = buffer.front();
     buffer.pop();
     switch (item_type){
       case item_type_bar_e::BAR_LABEL:
-        bar->setLabel(item);
+        bar.setLabel(item);
         break;
       case item_type_bar_e::VALUE:
-      cout << item << "\n";
+      //cout << item << "\n";
         int value;
         if(!validateBarValue(item, value)) return false;
-        bar->setValue(value);
+        bar.setValue(value);
         break;
       case item_type_bar_e::CATEGORY:
-        bar->setCategory(item);
+        bar.setCategory(item);
         categories.insert(item);
         break;
       default:

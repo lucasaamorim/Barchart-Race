@@ -26,6 +26,7 @@ class Bar {
   string category; ///< The category this bar belongs to
 
   public:
+  Bar() = default;
   inline bool operator<(const Bar &B) const { return this->value < B.value; }
   inline bool operator>(const Bar &B) const { return B < *this; }
   inline bool operator<=(const Bar &B) const { return !(*this > B); }
@@ -57,6 +58,16 @@ class Frame {
   int n_ticks;                                ///< Number of tick marks on the x-axis
 
   public:
+  Frame() = default;
+  Frame(const Frame& other) : 
+  category_colors(other.category_colors),
+  title(other.title),
+  x_label(other.x_label),
+  timestamp(other.timestamp),
+  source(other.source),
+  bar_length(other.bar_length),
+  axis_length(other.axis_length),
+  n_ticks(other.n_ticks) {}
   void render(int n_bars); // Has > 15 categories or none
   void render(std::map<string,color_t> categories, int n_bars); // Has between 1 and 15 categories
   void calcLengths();
@@ -66,8 +77,8 @@ class Frame {
   bool empty() { return bars.empty(); }
   void addCategoryColor(const string &category) { category_colors[category] = Colors::COLORS[category_colors.size()%Colors::COLORS.size()]; }
 
-  void setTitle(const string &title) { this->title = title; }
-  void setXLabel(const string &x_label) { this->x_label = x_label; }
-  void setTimestamp(const string &timestamp) { this->timestamp = timestamp; }
-  void setSource(const string &source) { this->source = source; }
+  void setTitle(const string title) { this->title = title; }
+  void setXLabel(const string x_label) { this->x_label = x_label; }
+  void setTimestamp(const string timestamp) { this->timestamp = timestamp; }
+  void setSource(const string source) { this->source = source; }
 };
