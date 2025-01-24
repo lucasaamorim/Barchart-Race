@@ -29,7 +29,7 @@ class FileParser {
   bool validateNumberBarItens(int& n_itens, bool& disrupted, std::queue<string>& buffer);
   bool setBarItens(std::queue<string>& buffer, Bar& bar);
   bool validateBarValue(string& item, int& value);
-  void getMetadata(string main_title, string x_label, string source);
+  void getMetadata(string& main_title, string& x_label, string& source);
 
   /// Custom implementation of getline with some conviniences, similar to getline(strean >> std::ws, line).
   std::istream& getLine(std::istream &stream, string &line, int &line_cnt);

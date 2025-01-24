@@ -168,7 +168,7 @@ bool FileParser::validateBarValue(string& item, int& value){
   return true;
 }
 
-void FileParser::getMetadata(string main_title, string x_label, string source){
+void FileParser::getMetadata(string& main_title, string& x_label, string& source){
   main_title = metadata.main_title;
   x_label = metadata.x_label;
   source = metadata.source;
