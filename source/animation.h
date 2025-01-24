@@ -12,11 +12,11 @@
 class AnimationManager {
   vector<std::unique_ptr<Frame>> frames;
   std::map<string, color_t> categories;
-  int frame_rate;
 
   public:
+    AnimationManager() = default;
+
     void addFrame(std::unique_ptr<Frame> frame) { frames.emplace_back(frame); }
-    void PlayAnimation(int fps);
-    void setFrameRate(int fps) { frame_rate = fps; }
+    void PlayAnimation(int fps, int n_bars);
     //void smoothFrames(); would be cool but will not implement it right now
 };
