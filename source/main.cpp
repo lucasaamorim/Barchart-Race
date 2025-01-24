@@ -51,10 +51,10 @@ void printWelcome() {
 
 void readInput(FileParser& parser, std::shared_ptr<AnimationManager> animation){
   string title, x_axis_label, source;
-  parser.getMetadata(title, x_axis_label, source);
   cout << ">>> Preparing to read input file \"" << filepath << "\"...\n\n";
   cout << ">>> Processing data, please wait.\n";
   parser.loadFile();
+  parser.getMetadata(title, x_axis_label, source);
   cout << ">>> Input file successfully read.\n";
   cout << ">>> We have " << animation->numberCharts() << " charts, each with " << bars << " bars.\n\n";
   cout << ">>> Animation Speed is " << fps << " fps.\n";
