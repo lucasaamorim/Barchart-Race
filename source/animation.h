@@ -1,17 +1,21 @@
 #pragma once
 
-#include <thread>
-#include <chrono>
-#include "barchart.h"
+#include <thread>       // std::this_thread::sleep_for
+#include <chrono>       // std::chrono::milliseconds
+#include <memory>       // std::unique_ptr
+#include <map>          // std::map
+#include <string>       // std::string
+#include <vector>       // std::vector
+#include "barchart.h"   // Frame
 
 //TODO: Implementar métodos
 class AnimationManager {
-  vector<Frame> frames;
+  vector<std::unique_ptr<Frame>> frames;
   std::map<string, color_t> categories;
   int frame_rate;
 
   public:
-    void addFrame(const Frame &frame) { frames.emplace_back(frame); }
+    void addFrame(std::unique_ptr<Frame> frame) { frames.emplace_back(frame); }
     void PlayAnimation(int fps);
     void setFrameRate(int fps) { frame_rate = fps; }
     //void smoothFrames(); would be cool but will not implement it right now
