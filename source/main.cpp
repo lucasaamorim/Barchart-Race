@@ -8,7 +8,7 @@
 
 void printUsage();
 void printWelcome();
-void readInput();
+void readInput(FileParser& parser, std::shared_ptr<AnimationManager> animation);
 void parseArgs(int argc, char **argv);
 
 int fps = 24;
