@@ -9,10 +9,32 @@
 class FileParser {
   string file_path;
   vector<Frame> parsed_frames;
+  Logger::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
+  string error_msg;
+  //std::fstream file_logger;
 
   public:
-  void loadFile(const string &file_path);
+  FileParser(string f_path) : file_path(f_path) {};
+  void loadFile();
+  void readHeader(std::ifstream& file);
+  void fillingHeaderFrame(Frame& frame);
   void parseData();
   std::vector<Frame> getParsedFrames() const { return parsed_frames; }
   bool validateFile() const;
+
+  /// Custom implementation of getline with some conviniences, similar to getline(strean >> std::ws, line).
+  /*!
+   * @param stream Stream to retrieve data from.
+   * @param line Reference to string that will recieve the line.
+   * @param line_cnt An integer to be incremented for every empty line it jumps over.
+   * @return The input stream. It may have the failbit flag set on if it's empty.
+   */
+  std::istream& get_line(std::istream &stream, string &line, int &line_cnt);
+
+  /*!
+   * Tokenizes values in a line.
+   * @param line Line to tokenize.
+   * @param buffer Buffer to push the tokens to.
+  */
+  size_t tokenize_line(string &line, std::queue<string> &buffer);
 };
