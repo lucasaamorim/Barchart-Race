@@ -114,7 +114,7 @@ string Frame::buildXAxis() const {
  *
  * @param color The color to use for both the bar and label
  */
-void Frame::Bar::render(color_t color) const {
+void Bar::render(color_t color) const {
   string bar = string(' ', length);
   bar = TextFormat::applyFormat(bar, color, Modifiers::REVERSE);
   bar += TextFormat::applyFormat(label, color);

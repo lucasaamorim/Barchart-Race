@@ -14,38 +14,38 @@ using std::vector;
 using std::cout;
 
 /**
+ * @brief A class representing a single bar in the bar chart
+ * 
+ * Contains the bar's value, display length, label and category information,
+ * along with comparison operators for sorting.
+ */
+class Bar {
+  int length;      ///< The display length of the bar in characters
+  int value;       ///< The numeric value represented by the bar
+  string label;    ///< The text label for the bar
+  string category; ///< The category this bar belongs to
+
+  public:
+  inline bool operator<(const Bar &B) const { return this->value < B.value; }
+  inline bool operator>(const Bar &B) const { return B < *this; }
+  inline bool operator<=(const Bar &B) const { return !(*this > B); }
+  inline bool operator>=(const Bar &B) const { return !(*this < B); }
+  void render(color_t color) const;
+  void setLength(const int &length) { this->length = length; }
+  void setValue(const int &value) { this->value = value; }
+  void setCategory(const string &category) { this->category = category; }
+  void setLabel(const string &label) { this->label = label; }
+  int getValue() const { return value; }
+  string getCategory() const { return category; }
+};
+
+/**
  * @brief A class representing a single frame in a bar chart animation
  * 
  * The Frame class contains all necessary data to render a single frame of a bar chart,
  * including the bars themselves, title, labels, and sizing information.
  */
 class Frame {
-  /**
-   * @brief A class representing a single bar in the bar chart
-   * 
-   * Contains the bar's value, display length, label and category information,
-   * along with comparison operators for sorting.
-   */
-  class Bar {
-    int length;      ///< The display length of the bar in characters
-    int value;       ///< The numeric value represented by the bar
-    string label;    ///< The text label for the bar
-    string category; ///< The category this bar belongs to
-
-    public:
-    inline bool operator<(const Bar &B) const { return this->value < B.value; }
-    inline bool operator>(const Bar &B) const { return B < *this; }
-    inline bool operator<=(const Bar &B) const { return !(*this > B); }
-    inline bool operator>=(const Bar &B) const { return !(*this < B); }
-    void render(color_t color) const;
-    void setLength(const int &length) { this->length = length; }
-    void setValue(const int &value) { this->value = value; }
-    void setCategory(const string &category) { this->category = category; }
-    void setLabel(const string &label) { this->label = label; }
-    int getValue() const { return value; }
-    string getCategory() const { return category; }
-  };
-
   std::vector<std::shared_ptr<Bar>> bars; ///< Collection of bars stored in descending order
   string title;                           ///< The title of the chart
   string x_label;                         ///< The label for the x-axis
