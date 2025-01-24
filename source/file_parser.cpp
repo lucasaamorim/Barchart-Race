@@ -9,13 +9,13 @@ enum item_type_bar_e{
   CATEGORY
 };
 
-enum errors_number_bar_itens_e{
-  EXCESSIVE_ARGUMENTS,
-  PREMATURE_END,
-  FEW_ARGUMENTS, 
-  NONE
-};
-
+/**
+ * @brief Loads a file and processes its data to generate animation frames.
+ * 
+ * This function opens a file specified by the `file_path`, reads the file header, 
+ * processes chart data, and creates `Frame` objects that are added to the animation 
+ * manager (`animation_manager`).
+ */
 void FileParser::loadFile(){
   std::ifstream file(file_path);
   std::unique_ptr<Frame> frame = std::make_unique<Frame>();
@@ -88,7 +88,7 @@ void FileParser::processData(int n_bars, std::ifstream& file, std::queue<string>
       }
       continue; // Ignoring this bar
     }
-    
+
     std::unique_ptr<Bar> bar = std::make_unique<Bar>();
     if(setBarItens(buffer, bar)){
       frame->addBar(std::move(bar));
