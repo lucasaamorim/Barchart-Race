@@ -16,6 +16,7 @@ class AnimationManager {
     AnimationManager() = default;
 
     void addFrame(std::unique_ptr<Frame> frame) { frames.push_back(std::move(frame)); }
+    void addCategoryColor(string category) { categories[category] = Colors::COLORS[categories.size()%Colors::COLORS.size()]; }
     void PlayAnimation(int fps, int n_bars);
     //void smoothFrames(); would be cool but will not implement it right now
 };

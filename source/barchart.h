@@ -76,7 +76,6 @@ class Frame {
   void addBar(std::unique_ptr<Bar> bar) { bars.push_back(std::move(bar)); }
   string buildXAxis() const;
   bool empty() { return bars.empty(); }
-  void addCategoryColor(const string &category) { category_colors[category] = Colors::COLORS[category_colors.size()%Colors::COLORS.size()]; }
 
   void setTitle(const string title) { this->title = title; }
   void setXLabel(const string x_label) { this->x_label = x_label; }
