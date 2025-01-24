@@ -19,7 +19,7 @@ class FileParser {
   FileParser(string f_path, std::shared_ptr<AnimationManager> am) : file_path(f_path), animation_manager(am) {};
   void loadFile();
   void readHeader(std::ifstream& file);
-  void fillFrameHeader(std::unique_ptr<Frame>& frame);
+  void fillFrameMetadata(std::unique_ptr<Frame>& frame);
   int validateNumbersBarsForFrame(string& line);
   void processData(int n_bars, std::ifstream& file, std::queue<string>& buffer, std::unique_ptr<Frame>& frame);
   bool FileParser::validateNumberBarItens(int& n_itens, bool& disrupted, std::queue<string>& buffer);

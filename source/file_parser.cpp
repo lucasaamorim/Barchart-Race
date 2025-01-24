@@ -25,7 +25,7 @@ void FileParser::loadFile(){
   }
   source_context.file = file_path;
   readHeader(file);
-  fillFrameHeader(frame);
+  fillFrameMetadata(frame);
   string line;
   while(get_line(file, line, source_context.line)) {
     size_t n_tokens = tokenize_line(line, buffer);
@@ -44,13 +44,22 @@ void FileParser::loadFile(){
   }
 }
 
+/**
+ * @brief Reads the header of the file to extract metadata for the chart.
+ * 
+ * This method reads the first three lines of the file and stores their content 
+ * in the corresponding member variables: `main_title`, `x_label`, and `source`.
+ * 
+ * @param file Reference to the input file stream from which the header 
+ * lines will be read.
+ */
 void FileParser::readHeader(std::ifstream& file){
   get_line(file, main_title, source_context.line);
   get_line(file, x_label, source_context.line);
   get_line(file,source, source_context.line);
 }
 
-void FileParser::fillFrameHeader(std::unique_ptr<Frame>& frame){
+void FileParser::fillFrameMetadata(std::unique_ptr<Frame>& frame){
   frame->setTitle(main_title);
   frame->setXLabel(x_label);
   frame->setSource(source);
