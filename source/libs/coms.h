@@ -4,10 +4,13 @@
 #include <iomanip> // setw()
 #include <string>
 #include <sstream>
+#include <fstream>
 
 #include "text_color.h"
 
 class Logger{
+private:
+  std::ofstream logger_file;
 public:
   struct SourceContext
   {
@@ -20,6 +23,7 @@ public:
     ~SourceContext() = default;
   };
 
+  void open_file();
   static void logError1(const std::string &message);
   static void logError2(const std::string &message, const SourceContext &sc);
   static void logWarning1(const std::string &message);

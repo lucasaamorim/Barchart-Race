@@ -12,9 +12,7 @@ class FileParser {
   string file_path;
   vector<Frame> parsed_frames;
   Logger::SourceContext source_context; //!< Saves in which file and on which line the error occurred.
-  string error_msg;
   std::set<string> categories;
-  //std::fstream file_logger;
 
   public:
   FileParser(string f_path) : file_path(f_path) {};
