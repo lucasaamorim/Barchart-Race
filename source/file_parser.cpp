@@ -15,15 +15,13 @@ void FileParser::loadFile(){
   Frame frame;
   std::queue<string> buffer;
   if(!file.is_open()){
-    error_msg = "Erro ao abrir o arquivo.";
-
+    Logger::logError1("Erro ao abrir o arquivo.");
   }
   source_context.file = file_path;
   readHeader(file);
   fillingHeaderFrame(frame);
   string line;
   while(get_line(file, line, source_context.line)) {
-    error_msg.clear();
     size_t n_tokens = tokenize_line(line, buffer);
     // Checks if there are too many values ​​given in the bar quantity line.
     if (n_tokens > 1) {
