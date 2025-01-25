@@ -38,7 +38,7 @@ The program reads data from a CSV file with the following structure:
      - **value**: The numerical value represented by the bar.
      - **category**: The category of the data item, used for color mapping.
 
-Example datasets, such as `cities.dat`, are available for download [here](https://github.com/lucasaamorim/barchart_datasets).
+Example datasets, such as `countries.txt`, are available for download [here](https://github.com/lucasaamorim/barchart_datasets).
 
 ## Interface
 
@@ -82,10 +82,10 @@ The program outputs a series of bar charts in the terminal, with the following c
 
 1. **Main Title**: The title of the chart, extracted from the input file header.
 2. **Bar Chart Title**: The timestamp for the current bar chart.
-3. **Bars**: A sequence of colored bars, sorted in descending order of value. Each bar is colored according to its category. If there are more than 14 categories, all bars are displayed in a single color.
-4. **X-Axis**: A horizontal axis below the bars, with reference marks and numerical values. The axis includes at least 5 equally spaced marks between the minimum and maximum values in the current bar chart.
+3. **Bars**: A sequence of colored bars, sorted in descending order of value. Each bar is colored according to its category. If there are more than 15 categories, all bars are displayed in a single color.
+4. **X-Axis**: A horizontal axis below the bars, with reference marks and numerical values. The axis includes 10 equally spaced marks between the minimum and maximum values in the current bar chart.
 5. **Source**: A line indicating the source of the data, extracted from the input file header.
-6. **Color Legend**: A legend showing the association between colors and categories (if there are 14 or fewer categories).
+6. **Color Legend**: A legend showing the association between colors and categories (if there are 15 or fewer categories).
 
 The animation is achieved by sequentially displaying bar charts in the terminal, with pauses between frames to create the illusion of movement.
 
