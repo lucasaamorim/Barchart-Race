@@ -90,7 +90,7 @@ The program outputs a series of bar charts in the terminal, with the following c
 The animation is achieved by sequentially displaying bar charts in the terminal, with pauses between frames to create the illusion of movement.
 
 ## About Refactoring
-The video on the refactoring of the old project can be viewed on [Loom](https://loom.com)
+The video on the refactoring of the old project can be viewed on [Loom](https://www.loom.com/share/fa364010171d4ef9b4d10dfb512798c1)
 
 ---
 
