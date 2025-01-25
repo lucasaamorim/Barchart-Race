@@ -13,7 +13,7 @@ using std::string;
 using std::vector;
 using std::cout;
 
-constexpr int DEFAULT_BAR_LENGTH = 50;
+constexpr int DEFAULT_BAR_LENGTH = 60;
 constexpr int DEFAULT_AXIS_LENGTH = 60;
 constexpr int DEFAULT_TICKS = 10;
 

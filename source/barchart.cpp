@@ -124,7 +124,8 @@ string Frame::buildXAxis() const {
 void Bar::render(color_t color) const {
   string bar = string(length, ' ');
   cout << TextFormat::applyFormat(bar, color, Modifiers::REVERSE)
-       << TextFormat::applyFormat(label, color) << '\n';
+       << TextFormat::applyFormat(label, color) << TextFormat::applyFormat(" [", color) 
+       << TextFormat::applyFormat(std::to_string(value), color) << TextFormat::applyFormat("]", color) << "\n";
 }
 
 /**
