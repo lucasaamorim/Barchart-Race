@@ -72,7 +72,7 @@ class Frame {
   axis_length(other.axis_length),
   n_ticks(other.n_ticks) {}
   void render(int n_bars); // Has > 15 categories or none
-  void render(std::map<string,color_t> categories, int n_bars); // Has between 1 and 15 categories
+  void render(const std::map<string,color_t> &categories, int n_bars); // Has between 1 and 15 categories
   void calcLengths();
   void sortBars();
   void addBar(std::unique_ptr<Bar> bar) { bars.push_back(std::move(bar)); }
