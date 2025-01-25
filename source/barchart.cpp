@@ -179,7 +179,7 @@ void Frame::render(int n_bars) {
  * @note Bars are automatically sorted before rendering
  * @note If n_bars is greater than the actual number of bars, all bars will be displayed
  */
-void Frame::render(std::map<string,color_t> categories, int n_bars) {
+void Frame::render(std::map<string,color_t>& categories, int n_bars) {
   if (empty()) {
     Logger::logError1("Cannot render an empty frame.");
     return;
