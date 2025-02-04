@@ -16,7 +16,9 @@ Authors: Lucas Apolonio de Amorim (@lucasaamorim), Moisés Ferreira de Lima (@mo
 
 The **bcr** (**b**ar **c**hart **r**ace) program is a terminal-based application designed to visualize the evolution of categorical data over time using animated bar charts. Each bar chart consists of up to 15 horizontal bars, where the length of each bar corresponds to the value of the data it represents. The bars are colored according to their category, providing an intuitive way to track changes in data trends.
 
-The program reads data from a CSV file, processes it, and displays a sequence of bar charts in the terminal, creating an animation effect. This animation helps users observe how data values change over time, with bars "racing" to the top as their values increase or decrease.
+![Demo of the Program Working](./assets/bcr_demo.gif)
+
+The program reads data from a CSV-like file, processes it, and displays a sequence of bar charts in the terminal, creating an animation effect. This animation helps users observe how data values change over time, with bars "racing" to the top as their values increase or decrease.
 
 ## Input
 

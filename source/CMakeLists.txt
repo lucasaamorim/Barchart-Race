@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
 #=== SETTING VARIABLES ===#
 # Compiling flags
 set( GCC_COMPILE_FLAGS "-Wall" )
+set( CMAKE_CXX_FLAGS_DEBUG "-Og -g")
 set( CMAKE_CXX_FLAGS_RELEASE "-O3" )
 
 #=== Main App ===
