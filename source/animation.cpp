@@ -14,10 +14,17 @@
  * The delay between frames is calculated as 1000/fps milliseconds.
  */
 void AnimationManager::PlayAnimation(int fps, int n_bars) {
-  for (auto &frame : frames) {
+  // Save cursor position
+  cout << "\033[s";
+
+  int n_frames = frames.size();
+  for (int i = 0; i < n_frames; ++i) {
+    auto &frame = frames[i];
     if (categories.empty() or categories.size() > 15) frame->render(n_bars);
     else frame->render(categories,n_bars);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1000 / fps));
+    // Restore cursor position & clear screen (Unless we rendered the last frame)
+    if (i < n_frames-1) cout << "\033[u\033[J";
   }
 }
