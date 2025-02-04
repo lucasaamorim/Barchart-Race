@@ -1,15 +1,16 @@
 # Bar Chart Race (bcr)
 
-Authors: Lucas Apolonio de Amorim, Moisés Ferreira de Lima
+Authors: Lucas Apolonio de Amorim (@lucasaamorim), Moisés Ferreira de Lima (@moisesferreira123)
 
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Input](#input)
-3. [Interface](#interface)
-4. [Execution](#execution)
-5. [System Modelling](#system-modelling)
-6. [Output](#output)
-7. [About Refactoring](#about-refactoring)
+3. [Compilation](#compilation)
+4. [Interface](#interface)
+5. [Execution](#execution)
+6. [System Modelling](#system-modelling)
+7. [Output](#output)
+8. [About Refactoring](#about-refactoring)
 
 ## Introduction
 
@@ -40,10 +41,24 @@ The program reads data from a CSV file with the following structure:
 
 Example datasets, such as `countries.txt`, are available for download [here](https://github.com/lucasaamorim/barchart_datasets).
 
+## Compilation
+
+The program can be compiled using cmake
+For a release build (compiler optmizations enabled, executable bcr will be on the build folder):
+```bash
+cmake -DCMAKE_BUILD_TYPE=Release -S source -B build
+cmake --build build
+```
+For a debug build (debug related flags enabled, executable brc will be on the debug folder):
+```bash
+cmake -DCMAKE_BUILD_TYPE=Debug -S source -B debug
+cmake --build debug
+```
+
 ## Interface
 
 The program is executed via the command line with the following syntax:
-```
+```bash
 ./bcr [<options>] <input_data_file>
 ```
 ### Options:

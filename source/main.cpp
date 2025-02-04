@@ -16,7 +16,6 @@ int bars = 5;
 string filepath = "";
 
 int main(int argc, char **argv) {
-
   parseArgs(argc, argv);
   printWelcome();
 
@@ -24,8 +23,8 @@ int main(int argc, char **argv) {
   FileParser parser(filepath, animation);
   readInput(parser, animation);
   
-  string enter_to_entry;
-  getline(std::cin, enter_to_entry);
+  //Wait for Enter to be pressed
+  std::cin.ignore();
   animation->PlayAnimation(fps,bars);
 
   return EXIT_SUCCESS;

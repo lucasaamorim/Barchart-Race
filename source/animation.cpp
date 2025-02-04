@@ -20,8 +20,8 @@ void AnimationManager::PlayAnimation(int fps, int n_bars) {
   int n_frames = frames.size();
   for (int i = 0; i < n_frames; ++i) {
     auto &frame = frames[i];
-    if (categories.empty() or categories.size() > 15) frame->render(n_bars);
-    else frame->render(categories,n_bars);
+    if (categories.empty() or categories.size() > 15) cout << frame->render(n_bars);
+    else cout << frame->render(categories,n_bars);
 
     std::this_thread::sleep_for(std::chrono::milliseconds(1000 / fps));
     // Restore cursor position & clear screen (Unless we rendered the last frame)

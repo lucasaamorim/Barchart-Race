@@ -121,11 +121,13 @@ string Frame::buildXAxis() const {
  *
  * @param color The color to use for both the bar and label
  */
-void Bar::render(color_t color) const {
+string Bar::render(color_t color) const {
+  std::stringstream ss;
   string bar = string(length, ' ');
-  cout << TextFormat::applyFormat(bar, color, Modifiers::REVERSE)
+  ss   << TextFormat::applyFormat(bar, color, Modifiers::REVERSE)
        << TextFormat::applyFormat(label, color) << TextFormat::applyFormat(" [", color) 
        << TextFormat::applyFormat(std::to_string(value), color) << TextFormat::applyFormat("]", color) << "\n";
+  return ss.str();
 }
 
 /**
@@ -143,11 +145,15 @@ void Bar::render(color_t color) const {
  * @note Bars are sorted before rendering
  * @note All bars are rendered in cyan color
  */
-void Frame::render(int n_bars) {
-  if (empty()) Logger::logError1("Cannot render an empty frame.");
+string Frame::render(int n_bars) {
+  if (empty()) {
+    Logger::logError1("Cannot render an empty frame.");
+    return "";
+  }
+  std::stringstream ss;
   // Chart Header
-  cout << "\t\t" << TextFormat::applyFormat(title, Colors::BLUE, Modifiers::BOLD) << "\n\n";
-  cout << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
+  ss << "\t\t" << TextFormat::applyFormat(title, Colors::BLUE, Modifiers::BOLD) << "\n\n";
+  ss << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
 
   //Chart Body
   sortBars();
@@ -155,14 +161,15 @@ void Frame::render(int n_bars) {
   calcLengths();
   
   for (int i = 0; i < n_bars and i < bars.size(); i++) {
-    bars[i]->render(Colors::CYAN);
+    ss << bars[i]->render(Colors::CYAN);
   }
 
-  cout << buildXAxis();
+  ss << buildXAxis();
 
   // Chart Footer
-  cout << TextFormat::applyFormat(x_label, Colors::YELLOW, Modifiers::BOLD) << "\n\n";
-  cout << TextFormat::applyFormat(source, Colors::WHITE, Modifiers::BOLD) << "\n";
+  ss << TextFormat::applyFormat(x_label, Colors::YELLOW, Modifiers::BOLD) << "\n\n";
+  ss << TextFormat::applyFormat(source, Colors::WHITE, Modifiers::BOLD) << "\n";
+  return ss.str();
 }
 
 /**
@@ -180,17 +187,18 @@ void Frame::render(int n_bars) {
  * @note Bars are automatically sorted before rendering
  * @note If n_bars is greater than the actual number of bars, all bars will be displayed
  */
-void Frame::render(std::map<string,color_t>& categories, int n_bars) {
+string Frame::render(std::map<string,color_t>& categories, int n_bars) {
   if (empty()) {
     Logger::logError1("Cannot render an empty frame.");
-    return;
+    return "";
   } else if (categories.size() > 15) {
-    render(n_bars);
-    return;
+    return render(n_bars);
   }
+
+  std::stringstream ss;
   // Chart Header
-  cout << "\t\t" << TextFormat::applyFormat(title, Colors::BLUE, Modifiers::BOLD) << "\n\n";
-  cout << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
+  ss << "\t\t" << TextFormat::applyFormat(title, Colors::BLUE, Modifiers::BOLD) << "\n\n";
+  ss << "\t" << TextFormat::applyFormat("Time Stamp: "+timestamp, Colors::BLUE, Modifiers::BOLD) << "\n\n";
   //Chart Body
   sortBars();
 
@@ -198,18 +206,19 @@ void Frame::render(std::map<string,color_t>& categories, int n_bars) {
 
   for (int i = 0; i < n_bars and i < bars.size(); i++) {
     auto category_color = categories[bars[i]->getCategory()];
-    bars[i]->render(category_color);
+    ss << bars[i]->render(category_color);
   }
   
-  cout << buildXAxis();
+  ss << buildXAxis();
   // Chart Footer
-  cout << TextFormat::applyFormat(x_label, Colors::YELLOW, Modifiers::BOLD) << "\n\n";
-  cout << TextFormat::applyFormat(source, Colors::WHITE, Modifiers::BOLD) << "\n";
+  ss << TextFormat::applyFormat(x_label, Colors::YELLOW, Modifiers::BOLD) << "\n\n";
+  ss << TextFormat::applyFormat(source, Colors::WHITE, Modifiers::BOLD) << "\n";
   // Color Caption
   for (const auto &[category_name, category_color] : categories) {
-    cout << TextFormat::applyFormat("   ", category_color, Modifiers::REVERSE) 
+    ss << TextFormat::applyFormat("   ", category_color, Modifiers::REVERSE) 
          << TextFormat::applyFormat(": "+category_name, category_color, Modifiers::BOLD)
          << " ";
   }
-  cout << '\n';
+  ss << '\n';
+  return ss.str();
 }

@@ -4,6 +4,7 @@
 #include <vector>             // std::vector
 #include <iostream>           // std::cout
 #include <map>                // std::map
+#include <sstream>            // std::stringstream
 #include <memory>             // std::unique_ptr
 #include <algorithm>          // std::sort, std::max
 #include "libs/text_color.h"  // color_t
@@ -35,7 +36,7 @@ class Bar {
   inline bool operator>(const Bar &B) const { return B < *this; }
   inline bool operator<=(const Bar &B) const { return !(*this > B); }
   inline bool operator>=(const Bar &B) const { return !(*this < B); }
-  void render(color_t color) const;
+  string render(color_t color) const;
   void setLength(const int &length) { this->length = length; }
   void setValue(const int &value) { this->value = value; }
   void setCategory(const string &category) { this->category = category; }
@@ -71,8 +72,8 @@ class Frame {
   bar_length(other.bar_length),
   axis_length(other.axis_length),
   n_ticks(other.n_ticks) {}
-  void render(int n_bars); // Has > 15 categories or none
-  void render(std::map<string,color_t> &categories, int n_bars); // Has between 1 and 15 categories
+  string render(int n_bars); // Has > 15 categories or none
+  string render(std::map<string,color_t> &categories, int n_bars); // Has between 1 and 15 categories
   void calcLengths();
   void sortBars();
   void addBar(std::unique_ptr<Bar> bar) { bars.push_back(std::move(bar)); }
