@@ -88,7 +88,7 @@ string Frame::buildXAxis() const {
     if (i % tick_separation == 0) {
       axis += "+";
       tick_locations.push_back(i);
-      tick_values.push_back(i * max_value / axis_length);
+      tick_values.push_back(i * max_value / bars.front()->getLength());
     } else {
       axis += "-";
     }
