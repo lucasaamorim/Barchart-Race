@@ -2,7 +2,6 @@
 
 #include <string>             // std::string
 #include <vector>             // std::vector
-#include <iostream>           // std::cout
 #include <map>                // std::map
 #include <sstream>            // std::stringstream
 #include <memory>             // std::unique_ptr
@@ -12,7 +11,6 @@
 
 using std::string;
 using std::vector;
-using std::cout;
 
 constexpr int DEFAULT_BAR_LENGTH = 60;
 constexpr int DEFAULT_AXIS_LENGTH = 60;
@@ -29,13 +27,10 @@ class Bar {
   int value;       ///< The numeric value represented by the bar
   string label;    ///< The text label for the bar
   string category; ///< The category this bar belongs to
-
+  
   public:
   Bar() = default;
-  inline bool operator<(const Bar &B) const { return this->value < B.value; }
-  inline bool operator>(const Bar &B) const { return B < *this; }
-  inline bool operator<=(const Bar &B) const { return !(*this > B); }
-  inline bool operator>=(const Bar &B) const { return !(*this < B); }
+  inline auto operator<=>(const Bar &B) const { return this->value <=> B.value; }
   string render(color_t color) const;
   void setLength(const int &length) { this->length = length; }
   void setValue(const int &value) { this->value = value; }
@@ -64,6 +59,7 @@ class Frame {
 
   public:
   Frame() = default;
+  
   Frame(const Frame& other) : 
   title(other.title),
   x_label(other.x_label),
@@ -72,6 +68,7 @@ class Frame {
   bar_length(other.bar_length),
   axis_length(other.axis_length),
   n_ticks(other.n_ticks) {}
+
   string render(int n_bars); // Has > 15 categories or none
   string render(std::map<string,color_t> &categories, int n_bars); // Has between 1 and 15 categories
   void calcLengths();
@@ -80,8 +77,11 @@ class Frame {
   string buildXAxis() const;
   bool empty() { return bars.empty(); }
 
-  void setTitle(const string title) { this->title = title; }
-  void setXLabel(const string x_label) { this->x_label = x_label; }
+  void setMeta(const string title, const string x_label, const string source) {
+    this->title = title;
+    this->x_label = x_label;
+    this->source = source;
+  }
+
   void setTimestamp(const string timestamp) { this->timestamp = timestamp; }
-  void setSource(const string source) { this->source = source; }
 };

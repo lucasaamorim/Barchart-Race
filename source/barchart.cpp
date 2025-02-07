@@ -58,6 +58,7 @@ void Frame::calcLengths() {
  * @note The scale is determined by the maximum value in the bars vector
  */
 string Frame::buildXAxis() const {
+  //FIXME: Fix number formatting for decimal values
   string axis;
   int tick_separation = (axis_length-1) / n_ticks;
   int max_value = bars.front()->getValue();
@@ -68,6 +69,7 @@ string Frame::buildXAxis() const {
     if (number >= (int)1e9) {
       formatted_number = std::to_string(number / 1000000000) + "B";
     } else if (number >= (int)1e6) {
+      int truncated = number % (int)1e6 / (int)1e4;
       if (number < (int)1e7) formatted_number = std::to_string(number / 1000000) + "." + std::to_string((number / 10000)%100) + "M";
       else formatted_number = std::to_string(number / 1000000) + "M";
     } else if (number >= (int)1e3) {

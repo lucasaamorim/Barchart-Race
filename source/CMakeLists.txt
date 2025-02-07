@@ -5,7 +5,8 @@ project (BarCharRace VERSION 1.0.0 LANGUAGES CXX )
 # for Unix Makefile builds (Ninja builds in the works) with the option
 # CMAKE_EXPORT_COMPILE_COMMANDS.
 set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED 20)
 #=== FINDING PACKAGES ===#
 
 

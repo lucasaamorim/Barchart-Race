@@ -6,6 +6,8 @@
 #include "animation.h"
 #include "file_parser.h"
 
+using std::cout;
+
 void printUsage();
 void printWelcome();
 void readInput(FileParser& parser, std::shared_ptr<AnimationManager> animation);
@@ -49,7 +51,7 @@ void printUsage() {
   std::cout << "\t-f <num> Animation speed in fps (frames per second).\n";
   std::cout << "\t\tValid range is [1,24]; Default value is 24.";
   std::cout << std::endl;
-  exit(1);
+  exit(0);
 }
 
 /**
@@ -78,11 +80,10 @@ void printWelcome() {
  * @note Function will prompt user to press enter before beginning animation
  */
 void readInput(FileParser& parser, std::shared_ptr<AnimationManager> animation){
-  string title, x_axis_label, source;
   cout << ">>> Preparing to read input file \"" << filepath << "\"...\n\n";
   cout << ">>> Processing data, please wait.\n";
-  parser.loadFile();
-  parser.getMetadata(title, x_axis_label, source);
+
+  auto [title, x_axis_label, source] = parser.loadFile();
   cout << ">>> Input file successfully read.\n";
   cout << ">>> We have " << animation->numberCharts() << " charts, each with " << bars << " bars.\n\n";
   cout << ">>> Animation Speed is " << fps << " fps.\n";
